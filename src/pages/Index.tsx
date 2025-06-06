@@ -4,7 +4,6 @@ import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import DestinationCard from '../components/DestinationCard';
 import FlightSearch from '../components/FlightSearch';
-import LoggedInSearch from '../components/LoggedInSearch';
 import Testimonials from '../components/Testimonials';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
@@ -64,13 +63,6 @@ const Index = () => {
       <div id="home">
         <Hero />
       </div>
-      
-      {/* Logged-in User Search - Only show if user is logged in */}
-      {user && (
-        <div className="section-container pt-8">
-          <LoggedInSearch />
-        </div>
-      )}
       
       {/* Flight Search Section - Moved below hero */}
       <div id="flights">

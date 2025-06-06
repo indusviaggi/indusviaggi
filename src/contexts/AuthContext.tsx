@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.API_BASE_URL}/auth/login`,
+        `${import.meta.env.VITE_API_BASE_URL}/user/login`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -93,12 +93,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
 
-      const data = await response.json();
-      // data: { token, user }
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('indusviaggi_token', data.token);
-      localStorage.setItem('indusviaggi_user', JSON.stringify(data.user));
+      const res = await response.json();
+      setToken(res.data.token);
+      setUser(res.data.user);
+      localStorage.setItem('indusviaggi_token', res.data.token);
+      localStorage.setItem('indusviaggi_user', JSON.stringify(res.data.user));
       setIsLoading(false);
       return true;
     } catch (error) {

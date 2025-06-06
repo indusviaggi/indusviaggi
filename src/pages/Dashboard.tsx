@@ -51,7 +51,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      <div className="pt-24 pb-12">
+      <div className="pt-32 pb-12">
         <div className="max-w-6xl mx-auto px-6">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-navy-900 mb-2">

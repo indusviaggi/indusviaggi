@@ -42,19 +42,32 @@ const Navbar = () => {
     e.preventDefault();
     const success = await login(loginEmail, loginPassword);
     if (success) {
-      toast({ title: "Bentornato!", description: "Hai effettuato l'accesso con successo." });
+      toast({ 
+        title: "Bentornato!", 
+        description: "Hai effettuato l'accesso con successo.",
+        duration: 5000 // <-- Close toast after 5 seconds
+      });
       setLoginEmail('');
       setLoginPassword('');
       setIsLoginOpen(false);
       navigate('/dashboard');
     } else {
-      toast({ title: "Accesso fallito", description: "Email o password non validi.", variant: "destructive" });
+      toast({ 
+        title: "Accesso fallito", 
+        description: "Email o password non validi.", 
+        variant: "destructive",
+        duration: 5000 // <-- Close toast after 5 seconds
+      });
     }
   };
 
   const handleLogout = () => {
     logout();
-    toast({ title: "Arrivederci!", description: "Hai effettuato il logout con successo." });
+    toast({ 
+      title: "Arrivederci!", 
+      description: "Hai effettuato il logout con successo.",
+      duration: 5000 // <-- Close toast after 5 seconds
+    });
     navigate('/');
   };
 
