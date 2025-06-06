@@ -30,6 +30,7 @@ const Profile = () => {
     toast({
       title: "Profile Updated",
       description: "Your profile has been successfully updated.",
+      duration: 5000,
     });
   };
 

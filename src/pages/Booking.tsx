@@ -44,6 +44,7 @@ const Booking = () => {
     toast({
       title: "Booking Confirmed!",
       description: "Your flight has been booked successfully. Check your email for confirmation.",
+      duration: 5000,
     });
     
     setIsProcessing(false);

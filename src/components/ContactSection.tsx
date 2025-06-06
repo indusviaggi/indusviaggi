@@ -29,34 +29,62 @@ const ContactSection = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateEmail(formData.email)) {
       toast({
         title: "Email non valida",
         description: "Inserisci un indirizzo email valido.",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 5000,
       });
       return;
     }
-    
+
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: formData.email,
+          type: 'query',
+          name: formData.name,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+
+      if (!response.ok) {
+        toast({
+          title: "Errore",
+          description: "Impossibile inviare il messaggio. Riprova più tardi.",
+          variant: "destructive",
+          duration: 5000,
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       setShowSuccessDialog(true);
-      
-      // Reset form
       setFormData({
         name: '',
         email: '',
         subject: '',
         message: ''
       });
-      
       setIsSubmitting(false);
-    }, 1500);
+    } catch (error) {
+      toast({
+        title: "Errore",
+        description: "Si è verificato un errore di rete.",
+        variant: "destructive",
+        duration: 5000,
+      });
+      setIsSubmitting(false);
+    }
   };
 
   return (

@@ -19,20 +19,49 @@ const Footer = () => {
     return emailRegex.test(email);
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateEmail(email)) {
       toast({
         title: "Email non valida",
         description: "Inserisci un indirizzo email valido.",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 5000,
       });
       return;
     }
 
-    setShowNewsletterDialog(true);
-    setEmail('');
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: email,
+          type: 'newsletter'
+        }),
+      });
+
+      if (!response.ok) {
+        toast({
+          title: "Errore",
+          description: "Impossibile iscriversi alla newsletter. Riprova più tardi.",
+          variant: "destructive",
+          duration: 5000,
+        });
+        return;
+      }
+
+      setShowNewsletterDialog(true);
+      setEmail('');
+    } catch (error) {
+      toast({
+        title: "Errore",
+        description: "Si è verificato un errore di rete.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
   };
 
   const handleSocialClick = (platform: string) => {

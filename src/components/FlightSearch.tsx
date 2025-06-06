@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Plane, CalendarIcon, Users, Search, User, Briefcase, Baby } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -91,10 +90,34 @@ const FlightSearch = () => {
 
   const totalPassengers = adults + children + infants;
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!origin || !destination || !departureDate || (tripType === 'roundtrip' && !returnDate)) {
       return;
     }
+
+    // Send booking search to backend
+    try {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'booking',
+          origin,
+          destination,
+          departureDate: format(departureDate, "yyyy-MM-dd"),
+          returnDate: tripType === 'roundtrip' && returnDate ? format(returnDate, "yyyy-MM-dd") : null,
+          tripType,
+          adults,
+          children,
+          infants,
+          cabinClass,
+          promoCode,
+        }),
+      });
+    } catch (error) {
+      // Optionally handle error (e.g., show a toast)
+    }
+
     setShowSearchDialog(true);
   };
 
@@ -386,28 +409,32 @@ const FlightSearch = () => {
 
       {/* Search Results Dialog */}
       <Dialog open={showSearchDialog} onOpenChange={setShowSearchDialog}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] bg-gradient-to-br from-gold-50 via-white to-sky-50 border-2 border-gold-400 shadow-xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-center">Ricerca Voli</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-center text-gold-600 flex items-center justify-center gap-2">
+              <span>🎉</span> Richiesta Info Voli
+            </DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <div className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-semibold mb-2">Dettagli Ricerca:</h3>
+              <div className="bg-white/90 p-4 rounded-lg border border-gold-200 shadow">
+                <h3 className="font-semibold mb-2 text-navy-900">Dettagli Ricerca:</h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div><span className="font-medium">Da:</span> {origin}</div>
-                  <div><span className="font-medium">A:</span> {destination}</div>
-                  <div><span className="font-medium">Partenza:</span> {departureDate ? format(departureDate, "dd/MM/yyyy") : ''}</div>
+                  <div><span className="font-medium text-navy-700">Da:</span> {origin}</div>
+                  <div><span className="font-medium text-navy-700">A:</span> {destination}</div>
+                  <div><span className="font-medium text-navy-700">Partenza:</span> {departureDate ? format(departureDate, "dd/MM/yyyy") : ''}</div>
                   {tripType === 'roundtrip' && returnDate && (
-                    <div><span className="font-medium">Ritorno:</span> {format(returnDate, "dd/MM/yyyy")}</div>
+                    <div><span className="font-medium text-navy-700">Ritorno:</span> {format(returnDate, "dd/MM/yyyy")}</div>
                   )}
-                  <div><span className="font-medium">Passeggeri:</span> {totalPassengers}</div>
-                  <div><span className="font-medium">Classe:</span> {cabinClasses.find(c => c.id === cabinClass)?.label}</div>
+                  <div><span className="font-medium text-navy-700">Passeggeri:</span> {totalPassengers}</div>
+                  <div><span className="font-medium text-navy-700">Classe:</span> {cabinClasses.find(c => c.id === cabinClass)?.label}</div>
                 </div>
               </div>
-              <div className="text-center text-gray-600">
-                <p>Stiamo cercando i migliori voli per te...</p>
-                <p className="text-sm mt-2">I risultati della ricerca saranno disponibili a breve.</p>
+              <div className="text-center text-gold-700">
+                <p className="font-semibold text-lg flex items-center justify-center gap-2">
+                  <span>✅</span> Abbiamo ricevuto la tua richiesta!
+                </p>
+                <p className="text-sm mt-2 text-navy-700">Verrai contattato da un nostro operatore in giornata.</p>
               </div>
             </div>
           </div>
