@@ -114,22 +114,17 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <div className="bg-gold-500 p-2 rounded-lg">
-            <Plane className="h-6 w-6 text-white" />
-          </div>
-          <h1 className="font-maiandra font-bold text-xl sm:text-2xl tracking-tight text-navy-900">
-            Indus Viaggi
-          </h1>
+          <img src="/public/l1.png" alt="Logo" style={{ height: 70 }} />
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <ul className="flex space-x-8">
             {[
-              { key: 'home', label: 'Home' },
-              { key: 'destinations', label: 'Destinazioni' },
-              { key: 'flights', label: 'Voli' },
-              { key: 'about', label: 'Chi Siamo' }
+              { key: 'home', label: 'HOME' },
+              { key: 'destinations', label: 'DESTINAZIONI' },
+              { key: 'flights', label: 'VOLI' },
+              { key: 'about', label: 'CHI SIAMO' }
             ].map((item) => (
               <li key={item.key}>
                 <button 
@@ -140,6 +135,11 @@ const Navbar = () => {
                 </button>
               </li>
             ))}
+            <li>
+              <a aria-label="Chat on WhatsApp" href="https://wa.me/393889220982" target="_blank">
+                <img width="140px" alt="Chat on WhatsApp" src="WhatsAppButtonGreenMedium.png" />
+              </a>
+            </li>
           </ul>
           
           <div className="flex items-center space-x-4">
@@ -293,10 +293,10 @@ const Navbar = () => {
         <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg animate-fade-in-up overflow-x-hidden">
           <ul className="flex flex-col p-4 sm:p-6 space-y-4">
             {[
-              { key: 'home', label: 'Home' },
-              { key: 'destinations', label: 'Destinazioni' },
-              { key: 'flights', label: 'Voli' },
-              { key: 'about', label: 'Chi Siamo' }
+              { key: 'home', label: 'HOME' },
+              { key: 'destinations', label: 'DESTINAZIONI' },
+              { key: 'flights', label: 'VOLI' },
+              { key: 'about', label: 'CHI SIAMO' }
             ].map((item) => (
               <li key={item.key}>
                 <button
@@ -307,6 +307,11 @@ const Navbar = () => {
                 </button>
               </li>
             ))}
+            <li>
+              <a aria-label="Chat on WhatsApp" href="https://wa.me/393889220982" target="_blank">
+                <img width="140px" alt="Chat on WhatsApp" src="WhatsAppButtonGreenMedium.png" />
+              </a>
+            </li>
             {user ? (
               <>
                 <li>

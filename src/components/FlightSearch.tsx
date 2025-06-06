@@ -99,7 +99,16 @@ const FlightSearch = () => {
   };
 
   return (
-    <section id="flights" className="section-container pt-24 pb-8">
+    <section className="bg-sky-50">
+    <div id="flights" className="section-container pt-24 pb-8 bg-sky-50">
+      <div className="text-center mb-12">
+        <span className="text-sm uppercase tracking-wider text-gold-500 font-medium mb-2 inline-block">
+          Prenota Adesso
+        </span>
+        <h2 className="text-3xl md:text-4xl font-bold text-navy-900 mb-4">
+          Trova il Tuo Volo Perfetto
+        </h2>
+      </div>
       <div className="max-w-4xl mx-auto">
         <div className="glass-card">
           {/* Tabs */}
@@ -404,6 +413,7 @@ const FlightSearch = () => {
           </div>
         </DialogContent>
       </Dialog>
+    </div>
     </section>
   );
 };

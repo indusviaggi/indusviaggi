@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Facebook, Instagram, Linkedin, Twitter, Youtube, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -49,7 +48,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-navy-900 text-white py-16">
+    <footer className="bg-navy-900 text-white py-1">
       <div className="section-container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
@@ -142,7 +141,16 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-700 pt-8 text-center text-gray-300">
-          <p>&copy; 2024 Indus Viaggi. Tutti i diritti riservati.</p>
+          <p>
+            <img
+              src="/iata1.png"
+              alt="Iata Logo"
+              title="Iata Logo"
+              className="inline-block align-middle ml-3 img-fluid2"
+              style={{ height: 100 }}
+            />
+          </p>
+            &copy; 2024 Indus Viaggi. Tutti i diritti riservati.
         </div>
       </div>
 
