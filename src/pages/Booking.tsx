@@ -26,7 +26,7 @@ const Booking = () => {
   // Mock flight data
   const flight = {
     id,
-    airline: 'SkyWander Airlines',
+    airline: 'Indus Viaggi Airlines',
     flightNumber: 'SW101',
     route: 'New York → London',
     date: '2024-06-15',

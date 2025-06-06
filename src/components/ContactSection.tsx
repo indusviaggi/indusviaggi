@@ -84,8 +84,8 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h3 className="text-navy-900 font-semibold mb-2">Scrivici</h3>
-                  <a href="mailto:info@skywander.com" className="text-navy-600 hover:text-gold-500 transition-colors">
-                    info@skywander.com
+                  <a href="mailto:info@indusviaggi.com" className="text-navy-600 hover:text-gold-500 transition-colors">
+                    indusviaggi@gmail.com
                   </a>
                 </div>
               </div>
@@ -97,7 +97,9 @@ const ContactSection = () => {
                 <div>
                   <h3 className="text-navy-900 font-semibold mb-2">Chiamaci</h3>
                   <a href="tel:+1234567890" className="text-navy-600 hover:text-gold-500 transition-colors">
-                    +39 123 456 7890
+                    +39 388 822 0982
+                    <br></br>
+                    +39 0522 434 627
                   </a>
                 </div>
               </div>
@@ -109,8 +111,8 @@ const ContactSection = () => {
                 <div>
                   <h3 className="text-navy-900 font-semibold mb-2">Visitaci</h3>
                   <p className="text-navy-600">
-                    Via del Viaggio 123<br />
-                    Milano, MI 20121
+                    Via Don Giovanni Alai 6/A<br />
+                    Reggio Emilia, RE 42121
                   </p>
                 </div>
               </div>

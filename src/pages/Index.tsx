@@ -78,7 +78,7 @@ const Index = () => {
       </div>
       
       {/* Stats Section - Moved up */}
-      <section className="py-20 bg-navy-900 text-white">
+      <section id="info" className="py-20 bg-navy-900 text-white">
         <div className="section-container">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[

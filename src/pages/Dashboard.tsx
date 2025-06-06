@@ -12,7 +12,7 @@ const mockBookings = [
   {
     id: '1',
     flightNumber: 'SW101',
-    airline: 'SkyWander Airlines',
+    airline: 'Indus Viaggi Airlines',
     route: 'New York → London',
     date: '2024-06-15',
     time: '08:00 - 20:00',

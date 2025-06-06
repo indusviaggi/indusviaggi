@@ -7,7 +7,7 @@ const Refunds = () => {
     <div className="min-h-screen w-full overflow-x-hidden">
       <Navbar />
       
-      <div className="pt-24 pb-16">
+      <div className="pt-24 pb-16 bg-sky-50">
         <div className="section-container">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-navy-900 mb-4">

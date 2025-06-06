@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, User, LogIn, LogOut, Plane } from 'lucide-react';
+import { Menu, X, User, LogIn, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
@@ -18,13 +18,9 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  const [signupName, setSignupName] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isSignupOpen, setIsSignupOpen] = useState(false);
-  
-  const { user, login, signup, logout, isLoading } = useAuth();
+
+  const { user, login, logout, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -56,21 +52,6 @@ const Navbar = () => {
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const success = await signup(signupName, signupEmail, signupPassword);
-    if (success) {
-      toast({ title: "Benvenuto su SkyWander!", description: "Il tuo account è stato creato con successo." });
-      setSignupName('');
-      setSignupEmail('');
-      setSignupPassword('');
-      setIsSignupOpen(false);
-      navigate('/dashboard');
-    } else {
-      toast({ title: "Registrazione fallita", description: "Utente già esistente o dati non validi.", variant: "destructive" });
-    }
-  };
-
   const handleLogout = () => {
     logout();
     toast({ title: "Arrivederci!", description: "Hai effettuato il logout con successo." });
@@ -79,7 +60,6 @@ const Navbar = () => {
 
   const handleNavClick = (section: string) => {
     if (location.pathname !== '/') {
-      // If not on homepage, navigate to homepage first, then scroll
       navigate('/');
       setTimeout(() => {
         if (section === 'home') {
@@ -92,7 +72,6 @@ const Navbar = () => {
         }
       }, 100);
     } else {
-      // If on homepage, just scroll to section
       if (section === 'home') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
@@ -120,12 +99,31 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <ul className="flex space-x-8">
-            {[
-              { key: 'home', label: 'HOME' },
-              { key: 'destinations', label: 'DESTINAZIONI' },
-              { key: 'flights', label: 'VOLI' },
-              { key: 'about', label: 'CHI SIAMO' }
-            ].map((item) => (
+            {
+            [{
+              key: 'home',
+              label: 'HOME'
+            },
+            {
+              key: 'flights',
+              label: 'VOLI'
+            },
+            {
+              key: 'info',
+              label: 'PERCHE NOI'
+            },
+            {
+              key: 'destinations',
+              label: 'DESTINAZIONI'
+            },
+            {
+              key: 'about',
+              label: 'RECENSIONI'
+            },
+            {
+              key: 'contact',
+              label: 'CONTATTI'
+            }].map((item) => (
               <li key={item.key}>
                 <button 
                   onClick={() => handleNavClick(item.key)}
@@ -214,62 +212,6 @@ const Navbar = () => {
                     </form>
                   </DialogContent>
                 </Dialog>
-                
-                <Dialog open={isSignupOpen} onOpenChange={setIsSignupOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="bg-gold-500 hover:bg-gold-600 text-white">
-                      <User className="h-4 w-4 mr-1" />
-                      Registrati
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl font-bold">Crea un Account</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={handleSignup} className="space-y-4 mt-4">
-                      <div>
-                        <label htmlFor="signup-name" className="block text-sm font-medium mb-1">Nome Completo</label>
-                        <input 
-                          type="text" 
-                          id="signup-name" 
-                          value={signupName}
-                          onChange={(e) => setSignupName(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500" 
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="signup-email" className="block text-sm font-medium mb-1">Email</label>
-                        <input 
-                          type="email" 
-                          id="signup-email" 
-                          value={signupEmail}
-                          onChange={(e) => setSignupEmail(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500" 
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="signup-password" className="block text-sm font-medium mb-1">Password</label>
-                        <input 
-                          type="password" 
-                          id="signup-password" 
-                          value={signupPassword}
-                          onChange={(e) => setSignupPassword(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500" 
-                          required
-                        />
-                      </div>
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-gold-500 hover:bg-gold-600 text-white"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? 'Creazione account...' : 'Registrati'}
-                      </Button>
-                    </form>
-                  </DialogContent>
-                </Dialog>
               </>
             )}
           </div>
@@ -292,12 +234,31 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg animate-fade-in-up overflow-x-hidden">
           <ul className="flex flex-col p-4 sm:p-6 space-y-4">
-            {[
-              { key: 'home', label: 'HOME' },
-              { key: 'destinations', label: 'DESTINAZIONI' },
-              { key: 'flights', label: 'VOLI' },
-              { key: 'about', label: 'CHI SIAMO' }
-            ].map((item) => (
+            {
+            [{
+              key: 'home',
+              label: 'HOME'
+            },
+            {
+              key: 'flights',
+              label: 'VOLI'
+            },
+            {
+              key: 'info',
+              label: 'PERCHE NOI'
+            },
+            {
+              key: 'destinations',
+              label: 'DESTINAZIONI'
+            },
+            {
+              key: 'about',
+              label: 'RECENSIONI'
+            },
+            {
+              key: 'contact',
+              label: 'CONTATTI'
+            }].map((item) => (
               <li key={item.key}>
                 <button
                   onClick={() => handleNavClick(item.key)}
@@ -389,66 +350,6 @@ const Navbar = () => {
                         <div className="text-center text-sm mt-4 text-gray-600">
                           Demo: demo@indusviaggi.com / demo123
                         </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-                </li>
-                <li>
-                  <Dialog open={isSignupOpen} onOpenChange={setIsSignupOpen}>
-                    <DialogTrigger asChild>
-                      <button 
-                        className="block py-2 w-full text-left text-gold-500 font-medium flex items-center gap-1.5"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <User className="h-4 w-4" />
-                        Registrati
-                      </button>
-                    </DialogTrigger>
-                    <DialogContent className="w-[95vw] max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle className="text-2xl font-bold">Crea un Account</DialogTitle>
-                      </DialogHeader>
-                      <form onSubmit={handleSignup} className="space-y-4 mt-4">
-                        <div>
-                          <label htmlFor="mobile-signup-name" className="block text-sm font-medium mb-1">Nome Completo</label>
-                          <input 
-                            type="text" 
-                            id="mobile-signup-name" 
-                            value={signupName}
-                            onChange={(e) => setSignupName(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500" 
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="mobile-signup-email" className="block text-sm font-medium mb-1">Email</label>
-                          <input 
-                            type="email" 
-                            id="mobile-signup-email" 
-                            value={signupEmail}
-                            onChange={(e) => setSignupEmail(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500" 
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="mobile-signup-password" className="block text-sm font-medium mb-1">Password</label>
-                          <input 
-                            type="password" 
-                            id="mobile-signup-password" 
-                            value={signupPassword}
-                            onChange={(e) => setSignupPassword(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gold-500" 
-                            required
-                          />
-                        </div>
-                        <Button 
-                          type="submit" 
-                          className="w-full bg-gold-500 hover:bg-gold-600 text-white"
-                          disabled={isLoading}
-                        >
-                          {isLoading ? 'Creazione account...' : 'Registrati'}
-                        </Button>
                       </form>
                     </DialogContent>
                   </Dialog>

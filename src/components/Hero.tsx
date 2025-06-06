@@ -45,7 +45,7 @@ const Hero = () => {
       <div className="relative z-10 text-center px-6 md:px-10 max-w-5xl mx-auto">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up opacity-0" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
           Viaggia <br />
-          <span className="text-gold-500">Senza Limiti</span>
+          <span className="text-gold-500">Verso l'Avventura</span>
         </h1>
         
         <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto animate-fade-in-up opacity-0" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>

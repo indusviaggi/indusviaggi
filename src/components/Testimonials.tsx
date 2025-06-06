@@ -14,7 +14,7 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    quote: "SkyWander made our honeymoon absolutely magical. The attention to detail and personalized service exceeded all our expectations.",
+    quote: "Indus Viaggi made our honeymoon absolutely magical. The attention to detail and personalized service exceeded all our expectations.",
     author: "Emily & James",
     role: "Honeymooners",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80"
@@ -28,7 +28,7 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 3,
-    quote: "As a family of five, travel planning can be stressful, but SkyWander made it effortless. Their family packages are thoughtfully crafted.",
+    quote: "As a family of five, travel planning can be stressful, but Indus Viaggi made it effortless. Their family packages are thoughtfully crafted.",
     author: "Sarah Johnson",
     role: "Family Traveler",
     avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80"
@@ -97,7 +97,7 @@ const Testimonials = () => {
             What Our Travelers Say
           </h2>
           <p className="text-navy-600">
-            Discover why thousands of travelers choose SkyWander for their adventures.
+            Discover why thousands of travelers choose Indus Viaggi for their adventures.
           </p>
         </div>
         

@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 const mockFlights = [
   {
     id: '1',
-    airline: 'SkyWander Airlines',
+    airline: 'Indus Viaggi Airlines',
     flightNumber: 'SW101',
     departure: { city: 'New York', airport: 'JFK', time: '08:00' },
     arrival: { city: 'London', airport: 'LHR', time: '20:00' },

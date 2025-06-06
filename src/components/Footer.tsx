@@ -37,7 +37,7 @@ const Footer = () => {
 
   const handleSocialClick = (platform: string) => {
     const urls = {
-      facebook: 'https://facebook.com',
+      facebook: 'https://facebook.com/Indusviaggi',
       instagram: 'https://instagram.com',
       twitter: 'https://twitter.com',
       linkedin: 'https://linkedin.com',
@@ -84,12 +84,12 @@ const Footer = () => {
                 { name: 'Home', path: '/' },
                 { name: 'Destinazioni', path: '/#destinations' },
                 { name: 'Voli', path: '/#flights' },
-                { name: 'Chi Siamo', path: '/#about' }
+                { name: 'Contatti', path: '/#contact' }
               ].map((link) => (
                 <li key={link.name}>
-                  <Link to={link.path} className="text-gray-300 hover:text-gold-500 transition-colors duration-300">
+                  <a href={link.path} className="text-gray-300 hover:text-gold-500 transition-colors duration-300">
                     {link.name}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -107,11 +107,15 @@ const Footer = () => {
                 { name: 'FAQ', path: '/faq' }
               ].map((link) => (
                 <li key={link.name}>
-                  <Link to={link.path} className="text-gray-300 hover:text-gold-500 transition-colors duration-300">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
+                <a
+                  href={link.path}
+                  className="text-gray-300 hover:text-gold-500 transition-colors duration-300"
+                >
+                  {link.name}
+                </a>
+              </li>
+              )
+              )}
             </ul>
           </div>
           
