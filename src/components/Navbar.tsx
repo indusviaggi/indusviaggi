@@ -106,7 +106,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
-          <img src="/public/l1.png" alt="Logo" style={{ height: 70 }} />
+          <img src="/public/l1.png" alt="Logo" style={{ height: 50 }} />
         </Link>
 
         {/* Desktop Navigation */}

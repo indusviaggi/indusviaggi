@@ -144,7 +144,7 @@ const Dashboard = () => {
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-semibold text-navy-900">Your Bookings</h3>
                     <Button 
-                      onClick={() => navigate('/')}
+                      onClick={() => navigate('/search')}
                       className="bg-gold-500 hover:bg-gold-600 text-white"
                     >
                       Book New Flight
