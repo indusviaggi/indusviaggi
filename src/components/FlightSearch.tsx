@@ -60,7 +60,7 @@ const FlightSearch = () => {
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
-  const [promoCode, setPromoCode] = useState('');
+  const [contact, setContact] = useState('');
 
   // Autocomplete state
   const [originOptions, setOriginOptions] = useState<any[]>([]);
@@ -165,7 +165,7 @@ const FlightSearch = () => {
 
   // Form validation
   const validateForm = () => {
-    if (!origin.trim() || !destination.trim() || !departureDate || (tripType === 'roundtrip' && !returnDate)) {
+    if (!origin.trim() || !destination.trim() || !departureDate || (tripType === 'roundtrip' && !returnDate) || !contact.trim()) {
       return 'Per favore compila tutti i campi obbligatori.';
     }
     if (origin.trim() === destination.trim()) {
@@ -180,8 +180,30 @@ const FlightSearch = () => {
         return 'La data di ritorno deve essere dopo la partenza.';
       }
     }
+    if (!isValidEmail(contact.trim()) && !isValidPhone(contact.trim())) {
+      return "Inserisci un'email o un numero di telefono valido";
+    }
     return null;
   };
+
+  function isValidEmail(email: string): boolean {
+    // Basic email regex
+    console.log(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function isValidPhone(phone: string): boolean {
+      // Remove spaces, dashes, parentheses
+      let cleaned = phone.replace(/[\s\-().]/g, '');
+      // Accept + or 00 at the start for country code
+      if (cleaned.startsWith('+')) {
+        cleaned = cleaned.slice(1);
+      } else if (cleaned.startsWith('00')) {
+        cleaned = cleaned.slice(2);
+      }
+      // After removing country code, must be all digits and 7-15 digits
+      return /^\d{7,15}$/.test(cleaned);
+  }
 
   // Reset form fields
   const resetForm = () => {
@@ -194,7 +216,7 @@ const FlightSearch = () => {
     setReturnDate(undefined);
     setOrigin('');
     setDestination('');
-    setPromoCode('');
+    setContact('');
     setOriginOptions([]);
     setDestinationOptions([]);
   };
@@ -225,7 +247,7 @@ const FlightSearch = () => {
           children,
           infants,
           cabinClass,
-          promoCode,
+          contact,
         }),
       });
       if (!res.ok) {
@@ -478,7 +500,7 @@ const FlightSearch = () => {
               </div>
             </div>
             
-            {/* Travelers, Cabin Class, and Promo Code */}
+            {/* Travelers, Cabin Class, and Contact */}
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               {/* Travelers */}
               <div className="flex-1">
@@ -596,13 +618,15 @@ const FlightSearch = () => {
               </div>
               
               <div className="flex-1">
-                <label className="block text-sm font-medium text-navy-700 mb-1">Codice Promo</label>
+                <label className="block text-sm font-medium text-navy-700 mb-1">Contatto *</label>
                 <Input
                   type="text"
-                  placeholder="Hai un codice?"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="Email o Telefono"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
                   className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  required
+                  aria-required="true"
                 />
               </div>
             </div>
