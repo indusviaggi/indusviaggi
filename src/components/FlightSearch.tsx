@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { Plane, CalendarIcon, Users, Search, User, Baby } from 'lucide-react';
+import Loader from './Loader';
 import { cn } from '@/lib/utils';
 import { format } from "date-fns";
 import { useToast } from '@/hooks/use-toast';
@@ -61,6 +62,7 @@ const FlightSearch = () => {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [contact, setContact] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Autocomplete state
   const [originOptions, setOriginOptions] = useState<any[]>([]);
@@ -231,6 +233,7 @@ const FlightSearch = () => {
       });
       return;
     }
+    setLoading(true);
     // Send booking search to backend
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
@@ -267,15 +270,16 @@ const FlightSearch = () => {
         });
         return;
       }
+      setShowSearchDialog(true);
     } catch (error) {
       toast({
         title: "Errore di rete",
         description: "Impossibile inviare la richiesta. Controlla la connessione e riprova.",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-    setShowSearchDialog(true);
   };
 
   return (
@@ -634,9 +638,10 @@ const FlightSearch = () => {
             <button 
               onClick={handleSearch}
               className="w-full btn-accent flex items-center justify-center space-x-2"
+              disabled={loading}
             >
-              <Search className="h-5 w-5" />
-              <span>Invia Richiesta</span>
+              {loading ? <Loader /> : <Search className="h-5 w-5" />}
+              <span>{loading ? 'Attendere...' : 'Invia Richiesta'}</span>
             </button>
           </div>
         </div>

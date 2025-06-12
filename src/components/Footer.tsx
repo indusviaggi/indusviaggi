@@ -12,6 +12,7 @@ import {
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [showNewsletterDialog, setShowNewsletterDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const validateEmail = (email: string) => {
@@ -21,7 +22,6 @@ const Footer = () => {
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateEmail(email)) {
       toast({
         title: "Email non valida",
@@ -31,7 +31,7 @@ const Footer = () => {
       });
       return;
     }
-
+    setLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
         method: 'POST',
@@ -41,7 +41,6 @@ const Footer = () => {
           type: 'newsletter'
         }),
       });
-
       if (!response.ok) {
         toast({
           title: "Errore",
@@ -49,9 +48,9 @@ const Footer = () => {
           variant: "destructive",
           duration: 5000,
         });
+        setLoading(false);
         return;
       }
-
       setShowNewsletterDialog(true);
       setEmail('');
     } catch (error) {
@@ -61,6 +60,8 @@ const Footer = () => {
         variant: "destructive",
         duration: 5000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -166,6 +167,7 @@ const Footer = () => {
               <button
                 type="submit"
                 className="bg-gold-500 hover:bg-gold-600 px-4 py-2 rounded-r-lg transition-colors duration-300"
+                disabled={loading}
               >
                 <Send className="h-4 w-4" />
               </button>
