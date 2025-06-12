@@ -49,7 +49,7 @@ const ContactSection = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: formData.email,
+          from: formData.email,
           type: 'query',
           name: formData.name,
           subject: formData.subject,
