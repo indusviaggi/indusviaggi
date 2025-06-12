@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Plane, CalendarIcon, Users, Search, User, Briefcase, Baby } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Plane, CalendarIcon, Users, Search, User, Baby } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from "date-fns";
+import { useToast } from '@/hooks/use-toast';
 import {
   Select,
   SelectContent,
@@ -47,6 +48,7 @@ const Tab = ({ title, icon, active, onClick }: TabProps) => (
 );
 
 const FlightSearch = () => {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('flights');
   const [tripType, setTripType] = useState('roundtrip');
   const [adults, setAdults] = useState(1);
@@ -59,6 +61,77 @@ const FlightSearch = () => {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [promoCode, setPromoCode] = useState('');
+
+  // Autocomplete state
+  const [originOptions, setOriginOptions] = useState<any[]>([]);
+  const [destinationOptions, setDestinationOptions] = useState<any[]>([]);
+  const [showOriginDropdown, setShowOriginDropdown] = useState(false);
+  const [showDestinationDropdown, setShowDestinationDropdown] = useState(false);
+  const [originError, setOriginError] = useState<string | null>(null);
+  const [destinationError, setDestinationError] = useState<string | null>(null);
+  const [originEmpty, setOriginEmpty] = useState(false);
+  const [destinationEmpty, setDestinationEmpty] = useState(false);
+  const originTimeout = useRef<NodeJS.Timeout | null>(null);
+  const destinationTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Fetch airport options
+  const fetchAirportOptions = async (keyword: string) => {
+    if (keyword.length < 3) return { data: [], error: null, empty: false };
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/amadeus/locations/search?keyword=${encodeURIComponent(keyword)}`);
+      if (!res.ok) {
+        return { data: [], error: `Errore di ricerca`, empty: false };
+      }
+      const data = await res.json();
+      if (data.success) {
+        if (Array.isArray(data.data) && data.data.length === 0) {
+          return { data: [], error: null, empty: true };
+        }
+        return { data: data.data, error: null, empty: false };
+      } else {
+        return { data: [], error: data.message || 'Errore di ricerca', empty: false };
+      }
+    } catch (e) {
+      return { data: [], error: 'Errore di rete', empty: false };
+    }
+  };
+
+  // Generic handler for airport input changes
+  const handleAirportInputChange = (
+    value: string,
+    setValue: (v: string) => void,
+    setOptions: (opts: any[]) => void,
+    setShowDropdown: (show: boolean) => void,
+    timeoutRef: React.MutableRefObject<NodeJS.Timeout | null>
+  ) => {
+    setValue(value);
+    setShowDropdown(false);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (value.length >= 3) {
+      timeoutRef.current = setTimeout(async () => {
+        const { data, error, empty } = await fetchAirportOptions(value);
+        setOptions(data);
+        setShowDropdown(data.length > 0 || !!error || empty);
+        if (setOptions === setOriginOptions) {
+          setOriginError(error);
+          setOriginEmpty(empty);
+        } else {
+          setDestinationError(error);
+          setDestinationEmpty(empty);
+        }
+      }, 300);
+    } else {
+      setOptions([]);
+      setShowDropdown(false);
+      if (setOptions === setOriginOptions) {
+        setOriginError(null);
+        setOriginEmpty(false);
+      } else {
+        setDestinationError(null);
+        setDestinationEmpty(false);
+      }
+    }
+  };
   
   const tabs = [
     { id: 'flights', title: 'Voli', icon: <Plane className="h-4 w-4" /> },
@@ -90,14 +163,55 @@ const FlightSearch = () => {
 
   const totalPassengers = adults + children + infants;
 
+  // Form validation
+  const validateForm = () => {
+    if (!origin.trim() || !destination.trim() || !departureDate || (tripType === 'roundtrip' && !returnDate)) {
+      return 'Per favore compila tutti i campi obbligatori.';
+    }
+    if (origin.trim() === destination.trim()) {
+      return 'La partenza e la destinazione non possono essere uguali.';
+    }
+    const now = new Date();
+    if (departureDate && departureDate < new Date(now.setHours(0,0,0,0))) {
+      return 'La data di partenza non può essere nel passato.';
+    }
+    if (tripType === 'roundtrip' && returnDate) {
+      if (returnDate < departureDate) {
+        return 'La data di ritorno deve essere dopo la partenza.';
+      }
+    }
+    return null;
+  };
+
+  // Reset form fields
+  const resetForm = () => {
+    setTripType('roundtrip');
+    setAdults(1);
+    setChildren(0);
+    setInfants(0);
+    setCabinClass('economy');
+    setDepartureDate(undefined);
+    setReturnDate(undefined);
+    setOrigin('');
+    setDestination('');
+    setPromoCode('');
+    setOriginOptions([]);
+    setDestinationOptions([]);
+  };
+
   const handleSearch = async () => {
-    if (!origin || !destination || !departureDate || (tripType === 'roundtrip' && !returnDate)) {
+    const error = validateForm();
+    if (error) {
+      toast({
+        title: "Attenzione",
+        description: error,
+        variant: "default",
+      });
       return;
     }
-
     // Send booking search to backend
     try {
-      await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -114,10 +228,31 @@ const FlightSearch = () => {
           promoCode,
         }),
       });
+      if (!res.ok) {
+        toast({
+          title: "Errore di invio",
+          description: "Si è verificato un errore durante l'invio della richiesta. Riprova più tardi.",
+          variant: "destructive",
+        });
+        return;
+      }
+      const data = await res.json();
+      if (data && data.success === false) {
+        toast({
+          title: "Errore di invio",
+          description: data.message || "Si è verificato un errore durante l'invio della richiesta.",
+          variant: "destructive",
+        });
+        return;
+      }
     } catch (error) {
-      // Optionally handle error (e.g., show a toast)
+      toast({
+        title: "Errore di rete",
+        description: "Impossibile inviare la richiesta. Controlla la connessione e riprova.",
+        variant: "destructive",
+      });
+      return;
     }
-
     setShowSearchDialog(true);
   };
 
@@ -187,10 +322,48 @@ const FlightSearch = () => {
                     type="text"
                     placeholder="Città o Aeroporto"
                     value={origin}
-                    onChange={(e) => setOrigin(e.target.value)}
+                    autoComplete="off"
+                    onChange={e =>
+                      handleAirportInputChange(
+                        e.target.value,
+                        setOrigin,
+                        setOriginOptions,
+                        setShowOriginDropdown,
+                        originTimeout
+                      )
+                    }
+                    onFocus={() => {
+                      if (originOptions.length > 0) setShowOriginDropdown(true);
+                    }}
+                    onBlur={() => setTimeout(() => {
+                      setShowOriginDropdown(false);
+                      setOriginEmpty(false);
+                    }, 200)}
                     className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
                     required
                   />
+                  {showOriginDropdown && (
+                    <ul className="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded-lg mt-1 max-h-60 overflow-auto shadow-lg">
+                      {originError && (
+                        <li className="px-4 py-2 text-red-600">{originError}</li>
+                      )}
+                      {originEmpty && !originError && (
+                        <li className="px-4 py-2 text-gray-500">Nessun risultato trovato</li>
+                      )}
+                      {originOptions.map((option) => (
+                        <li
+                          key={option.value}
+                          className="px-4 py-2 cursor-pointer hover:bg-gold-100"
+                          onMouseDown={() => {
+                            setOrigin(option.label);
+                            setShowOriginDropdown(false);
+                          }}
+                        >
+                          {option.label}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 
                 <div className="relative">
@@ -229,10 +402,48 @@ const FlightSearch = () => {
                     type="text"
                     placeholder="Città o Aeroporto"
                     value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
+                    autoComplete="off"
+                    onChange={e =>
+                      handleAirportInputChange(
+                        e.target.value,
+                        setDestination,
+                        setDestinationOptions,
+                        setShowDestinationDropdown,
+                        destinationTimeout
+                      )
+                    }
+                    onFocus={() => {
+                      if (destinationOptions.length > 0) setShowDestinationDropdown(true);
+                    }}
+                    onBlur={() => setTimeout(() => {
+                      setShowDestinationDropdown(false);
+                      setDestinationEmpty(false);
+                    }, 200)}
                     className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 focus:border-transparent"
                     required
                   />
+                  {showDestinationDropdown && (
+                    <ul className="absolute z-50 left-0 right-0 bg-white border border-gray-200 rounded-lg mt-1 max-h-60 overflow-auto shadow-lg">
+                      {destinationError && (
+                        <li className="px-4 py-2 text-red-600">{destinationError}</li>
+                      )}
+                      {destinationEmpty && !destinationError && (
+                        <li className="px-4 py-2 text-gray-500">Nessun risultato trovato</li>
+                      )}
+                      {destinationOptions.map((option) => (
+                        <li
+                          key={option.value}
+                          className="px-4 py-2 cursor-pointer hover:bg-gold-100"
+                          onMouseDown={() => {
+                            setDestination(option.label);
+                            setShowDestinationDropdown(false);
+                          }}
+                        >
+                          {option.label}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 
                 {tripType === 'roundtrip' && (
@@ -401,14 +612,17 @@ const FlightSearch = () => {
               className="w-full btn-accent flex items-center justify-center space-x-2"
             >
               <Search className="h-5 w-5" />
-              <span>Cerca Voli</span>
+              <span>Invia Richiesta</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Search Results Dialog */}
-      <Dialog open={showSearchDialog} onOpenChange={setShowSearchDialog}>
+      <Dialog open={showSearchDialog} onOpenChange={(open) => {
+        setShowSearchDialog(open);
+        if (!open) resetForm();
+      }}>
         <DialogContent className="sm:max-w-[600px] bg-gradient-to-br from-gold-50 via-white to-sky-50 border-2 border-gold-400 shadow-xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-center text-gold-600 flex items-center justify-center gap-2">
