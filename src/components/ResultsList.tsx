@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import FilterResults from '@/components/FilterResults';
+import FlightDetailsDialog from '@/components/FlightDetailsDialog';
+import BookingDialog from '@/components/BookingDialog';
 
 interface ResultsListProps {
   results: any[];
@@ -167,8 +169,27 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
     ) : null
   );
 
+  // Dialog state for flight details
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedFlight, setSelectedFlight] = useState(null);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+
   return (
     <div>
+      <FlightDetailsDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        flight={selectedFlight}
+        onBook={(flight) => {
+          setDialogOpen(false);
+          setBookingDialogOpen(true);
+        }}
+      />
+      <BookingDialog
+        open={bookingDialogOpen}
+        onClose={() => setBookingDialogOpen(false)}
+        flight={selectedFlight}
+      />
       <div className="flex justify-end">
         <Pagination />
       </div>
@@ -198,8 +219,10 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
               const depLast = depSegs[depSegs.length-1];
               const retFirst = retSegs[0];
               const retLast = retSegs[retSegs.length-1];
+              // Use flight.id if available, otherwise fallback to idx + (page-1)*RESULTS_PER_PAGE
+              const flightId = flight.id || (idx + (page-1)*RESULTS_PER_PAGE);
               return (
-                <div key={idx + (page-1)*RESULTS_PER_PAGE} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                <div key={flightId} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex flex-col md:flex-row md:items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center mb-4">
@@ -262,7 +285,13 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
                     </div>
                     <div className="md:ml-8 mt-4 md:mt-0 text-center">
                       <div className="text-3xl font-bold text-navy-900 mb-2">€{flight.price}</div>
-                      <button className="bg-gold-500 hover:bg-gold-600 text-white px-6 py-2 rounded">Select Flight</button>
+                      <button
+                        className="bg-gold-500 hover:bg-gold-600 text-white px-6 py-2 rounded"
+                        onClick={() => {
+                          setSelectedFlight(flight);
+                          setDialogOpen(true);
+                        }}
+                      >Select Flight</button>
                     </div>
                   </div>
                 </div>
