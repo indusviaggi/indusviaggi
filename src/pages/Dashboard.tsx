@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import FlightDetailsDialog from '@/components/FlightDetailsDialog';
+import { formatDateLocal } from '@/utils/formatDateLocal';
 
 // Bookings state from API
 
@@ -186,11 +187,11 @@ const Dashboard = () => {
                                 {depSeg?.from} → {depSeg?.to} {retSeg ? ` / ${retSeg.from} → ${retSeg.to}` : ''}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {depSeg && new Date(depSeg.departureTime).toLocaleDateString('it-IT')}
+                                {depSeg && formatDateLocal(new Date(depSeg.departureTime), 'IT')}
                                 {retSeg && (
                                   <>
                                     {' '}↔{' '}
-                                    {new Date(retSeg.departureTime).toLocaleDateString('it-IT')}
+                                    {formatDateLocal(new Date(retSeg.departureTime), 'IT')}
                                   </>
                                 )}
                                 {' • '}Classe {flight?.travelClass} • {flight?.ticketType}

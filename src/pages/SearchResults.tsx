@@ -37,6 +37,9 @@ const SearchResults = () => {
   const [lastSearch, setLastSearch] = useState<any>(null);
   const [showLastSearch, setShowLastSearch] = useState(false);
 
+  // Filtered count state
+  const [filteredCount, setFilteredCount] = useState<number>(0);
+
   // On mount, check for last search in localStorage
   useEffect(() => {
     const saved = localStorage.getItem('last_search');
@@ -199,7 +202,7 @@ const SearchResults = () => {
           {showLastSearch && lastSearch && (
             <div className="mb-4 flex justify-end">
               <Button variant="outline" size="sm" onClick={handleRestoreLastSearch}>
-                Usa ultima ricerca: {lastSearch.from} → {lastSearch.to} ({lastSearch.departDate ? new Date(lastSearch.departDate).toLocaleDateString() : ''})
+                Usa ultima ricerca: {lastSearch.from} → {lastSearch.to} ({lastSearch.departDate ? formatDateLocal(new Date(lastSearch.departDate), 'IT') : ''})
               </Button>
             </div>
           )}
@@ -272,16 +275,16 @@ const SearchResults = () => {
               Da <span className="font-semibold">{from}</span> a <span className="font-semibold">{to}</span>
             </h1>
             <p className="text-navy-600">
-              <span className="font-semibold">{departDate.toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span className="font-semibold">{formatDateLocal(departDate, 'IT')}</span>
               {tripType === 'roundtrip' && returnDate && (
                 <>
                   {' '}–{' '}
-                  <span className="font-semibold">{returnDate && typeof returnDate !== 'string' ? returnDate.toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : ''}</span>
+                  <span className="font-semibold">{returnDate && typeof returnDate !== 'string' ? formatDateLocal(returnDate, 'IT') : ''}</span>
                 </>
               )}
               {' • '}<span className="font-semibold">{adults + children + infants} {adults + children + infants === 1 ? 'passeggero' : 'passeggeri'}</span>
               {' • '}<span className="font-semibold">{cabinClasses.find(c => c.id === cabinClass)?.label}</span>
-              {' • '}<span className="font-semibold">{result.data.length} voli trovati</span>
+              {' • '}<span className="font-semibold">{filteredCount} voli trovati</span>
             </p>
           </div>)}
           {/* Ghost loader while loading */}
@@ -299,7 +302,12 @@ const SearchResults = () => {
 
           {/* Show sort and results only when search is finished */}
           {(!loading && result && result.data && Array.isArray(result.data) && result.data.length > 0) && (
-            <ResultsList results={result.data} cabinClasses={cabinClasses} cabinClass={cabinClass} />
+            <ResultsList
+              results={result.data}
+              cabinClasses={cabinClasses}
+              cabinClass={cabinClass}
+              onFilteredCountChange={setFilteredCount}
+            />
           )}
         </div>
       </div>

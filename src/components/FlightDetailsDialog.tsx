@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { formatDateLocal } from '@/utils/formatDateLocal';
 
 const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = true }: {
   open: boolean;
@@ -33,7 +34,7 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = t
               </div>
               <div className="flex items-center space-x-8">
                 <div className="text-center">
-                  <div className="text-base sm:text-2xl font-bold text-navy-900">{depFirst ? new Date(depFirst.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                  <div className="text-base sm:text-2xl font-bold text-navy-900">{depFirst ? `${formatDateLocal(new Date(depFirst.departureTime), 'IT')} ${new Date(depFirst.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}` : ''}</div>
                   <div className="text-xs sm:text-sm text-gray-500">{depFirst?.from}</div>
                   <div className="text-xs text-gray-400 break-words">{depFirst?.airLine}</div>
                 </div>
@@ -51,7 +52,7 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = t
                   )}
                 </div>
                 <div className="text-center">
-                  <div className="text-base sm:text-2xl font-bold text-navy-900">{depLast ? new Date(depLast.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                  <div className="text-base sm:text-2xl font-bold text-navy-900">{depLast ? `${formatDateLocal(new Date(depLast.arrivalTime), 'IT')} ${new Date(depLast.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}` : ''}</div>
                   <div className="text-xs sm:text-sm text-gray-500">{depLast?.to}</div>
                   <div className="text-xs text-gray-400 break-words">{depLast?.airLine}</div>
                 </div>
@@ -60,7 +61,7 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = t
               {retSegs.length > 0 && (
                 <div className="flex items-center space-x-8 mt-4">
                   <div className="text-center">
-                    <div className="text-base sm:text-2xl font-bold text-navy-900">{retFirst ? new Date(retFirst.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                    <div className="text-base sm:text-2xl font-bold text-navy-900">{retFirst ? `${formatDateLocal(new Date(retFirst.departureTime), 'IT')} ${new Date(retFirst.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}` : ''}</div>
                     <div className="text-xs sm:text-sm text-gray-500">{retFirst?.from}</div>
                     <div className="text-xs text-gray-400 break-words">{retFirst?.airLine}</div>
                   </div>
@@ -78,7 +79,7 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = t
                     )}
                   </div>
                   <div className="text-center">
-                    <div className="text-base sm:text-2xl font-bold text-navy-900">{retLast ? new Date(retLast.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                    <div className="text-base sm:text-2xl font-bold text-navy-900">{retLast ? `${formatDateLocal(new Date(retLast.arrivalTime), 'IT')} ${new Date(retLast.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}` : ''}</div>
                     <div className="text-xs sm:text-sm text-gray-500">{retLast?.to}</div>
                     <div className="text-xs text-gray-400 break-words">{retLast?.airLine}</div>
                   </div>
@@ -122,8 +123,8 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = t
                     <div className="text-xs sm:text-sm text-gray-700">{seg.from} → {seg.to}</div>
                   </div>
                   <div className="text-xs sm:text-sm text-gray-600 mt-2 md:mt-0 break-words">
-                    Partenza: {new Date(seg.departureTime).toLocaleString()}<br />
-                    Arrivo: {new Date(seg.arrivalTime).toLocaleString()}<br />
+                    Partenza: {formatDateLocal(new Date(seg.departureTime), 'IT')} {new Date(seg.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br />
+                    Arrivo: {formatDateLocal(new Date(seg.arrivalTime), 'IT')} {new Date(seg.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br />
                     Durata: {seg.segmentDuration}
                   </div>
                 </div>
@@ -145,8 +146,8 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = t
                         <div className="text-xs sm:text-sm text-gray-700">{seg.from} → {seg.to}</div>
                       </div>
                       <div className="text-xs sm:text-sm text-gray-600 mt-2 md:mt-0 break-words">
-                        Partenza: {new Date(seg.departureTime).toLocaleString()}<br />
-                        Arrivo: {new Date(seg.arrivalTime).toLocaleString()}<br />
+                        Partenza: {formatDateLocal(new Date(seg.departureTime), 'IT')} {new Date(seg.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br />
+                        Arrivo: {formatDateLocal(new Date(seg.arrivalTime), 'IT')} {new Date(seg.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br />
                         Durata: {seg.segmentDuration}
                       </div>
                     </div>

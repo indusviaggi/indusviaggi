@@ -1,6 +1,7 @@
 
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { formatDateLocal } from '../utils/formatDateLocal';
 
 const Privacy = () => {
   return (
@@ -118,7 +119,7 @@ const Privacy = () => {
 
           <div className="text-center mt-12">
             <p className="text-gray-600 text-sm">
-              Ultimo aggiornamento: {new Date().toLocaleDateString('it-IT')}
+              Ultimo aggiornamento: {formatDateLocal(new Date(), 'IT')}
             </p>
           </div>
         </div>

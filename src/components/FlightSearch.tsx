@@ -649,9 +649,9 @@ const FlightSearch = () => {
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div><span className="font-medium text-navy-700">Da:</span> {origin}</div>
                   <div><span className="font-medium text-navy-700">A:</span> {destination}</div>
-                  <div><span className="font-medium text-navy-700">Partenza:</span> {departureDate ? format(departureDate, "dd/MM/yyyy") : ''}</div>
+                  <div><span className="font-medium text-navy-700">Partenza:</span> {departureDate ? formatDateLocal(departureDate, 'IT') : ''}</div>
                   {tripType === 'roundtrip' && returnDate && (
-                    <div><span className="font-medium text-navy-700">Ritorno:</span> {format(returnDate, "dd/MM/yyyy")}</div>
+                    <div><span className="font-medium text-navy-700">Ritorno:</span> {formatDateLocal(returnDate, 'IT')}</div>
                   )}
                   <div><span className="font-medium text-navy-700">Passeggeri:</span> {totalPassengers}</div>
                   <div><span className="font-medium text-navy-700">Classe:</span> {cabinClasses.find(c => c.id === cabinClass)?.label}</div>

@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import apiFetch from '@/utils/apiFetch';
 import { validateEmail, validatePhone } from '@/utils/validation';
+import { formatDateLocal } from '@/utils/formatDateLocal';
 
 const BookingDialog = ({ open, onClose, flight }: {
   open: boolean;
@@ -113,10 +114,10 @@ const BookingDialog = ({ open, onClose, flight }: {
                           <span className="font-semibold">Compagnia:</span> {seg.airlineName || seg.airLine} <span className="ml-2 font-semibold">{seg.flightNumber}</span>
                         </div>
                         <div className="text-xs sm:text-sm text-gray-700">
-                          <span className="font-semibold">Partenza:</span> {seg.departureTime ? new Date(seg.departureTime).toLocaleString('it-IT') : ''}
+                          <span className="font-semibold">Partenza:</span> {seg.departureTime ? formatDateLocal(new Date(seg.departureTime), 'IT') : ''}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-700">
-                          <span className="font-semibold">Arrivo:</span> {seg.arrivalTime ? new Date(seg.arrivalTime).toLocaleString('it-IT') : ''}
+                          <span className="font-semibold">Arrivo:</span> {seg.arrivalTime ? formatDateLocal(new Date(seg.arrivalTime), 'IT') : ''}
                         </div>
                       </div>
                     </div>
@@ -129,10 +130,10 @@ const BookingDialog = ({ open, onClose, flight }: {
                           <span className="font-semibold">Compagnia:</span> {seg.airlineName || seg.airLine} <span className="ml-2 font-semibold">{seg.flightNumber}</span>
                         </div>
                         <div className="text-xs sm:text-sm text-gray-700">
-                          <span className="font-semibold">Partenza:</span> {seg.departureTime ? new Date(seg.departureTime).toLocaleString('it-IT') : ''}
+                          <span className="font-semibold">Partenza:</span> {seg.departureTime ? formatDateLocal(new Date(seg.departureTime), 'IT') : ''}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-700">
-                          <span className="font-semibold">Arrivo:</span> {seg.arrivalTime ? new Date(seg.arrivalTime).toLocaleString('it-IT') : ''}
+                          <span className="font-semibold">Arrivo:</span> {seg.arrivalTime ? formatDateLocal(new Date(seg.arrivalTime), 'IT') : ''}
                         </div>
                       </div>
                     </div>

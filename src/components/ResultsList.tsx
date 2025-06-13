@@ -7,13 +7,14 @@ interface ResultsListProps {
   results: any[];
   cabinClasses: { id: string; label: string }[];
   cabinClass: string;
+  onFilteredCountChange?: (count: number) => void;
 }
 
 const RESULTS_PER_PAGE = 10;
 const PRICE_MIN = 0;
 const PRICE_STEP = 10;
 
-const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinClass }) => {
+const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinClass, onFilteredCountChange }) => {
   // Compute max price from results
   const maxPrice = useMemo(() => {
     if (!results || results.length === 0) return 2000;
@@ -92,6 +93,13 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
     }
     return filtered;
   }, [results, price, stops, flightDuration, layoverDuration, sort]);
+
+  // Notify parent of filtered count
+  React.useEffect(() => {
+    if (onFilteredCountChange) {
+      onFilteredCountChange(filteredResults.length);
+    }
+  }, [filteredResults.length, onFilteredCountChange]);
 
   const totalPages = Math.ceil(filteredResults.length / RESULTS_PER_PAGE);
   const paginatedResults = filteredResults.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
