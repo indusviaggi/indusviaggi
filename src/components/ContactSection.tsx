@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import apiFetch from '@/utils/apiFetch';
 import { Send, Mail, Phone, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -45,7 +46,7 @@ const ContactSection = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

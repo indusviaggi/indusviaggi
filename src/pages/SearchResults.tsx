@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import apiFetch from '@/utils/apiFetch';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SearchForm from '@/components/SearchForm';
@@ -61,7 +62,7 @@ const SearchResults = () => {
     if (keyword.length < 3) return { data: [], error: null, empty: false };
     try {
       // Replace with your real API endpoint
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/amadeus/locations/search?type=AIRPORT&keyword=${encodeURIComponent(keyword)}`);
+      const res = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/amadeus/locations/search?type=AIRPORT&keyword=${encodeURIComponent(keyword)}`);
       if (!res.ok) {
         return { data: [], error: `Errore di ricerca`, empty: false };
       }
@@ -149,7 +150,7 @@ const SearchResults = () => {
       payload.returnDate = returnDate instanceof Date ? returnDate.toISOString().split('T')[0] : returnDate;
     }
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/amadeus/flights/search`, {
+      const res = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/amadeus/flights/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

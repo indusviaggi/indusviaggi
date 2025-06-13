@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import apiFetch from '@/utils/apiFetch';
 
 interface User {
   id: string;
@@ -79,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_BASE_URL}/user/login`,
         {
           method: 'POST',
@@ -129,15 +130,4 @@ export const useAuth = () => {
 };
 
 // Helper function for making authenticated API calls
-export const authFetch = (url: string, options: RequestInit = {}) => {
-  const token = localStorage.getItem('indusviaggi_token');
-  
-  return fetch(url, {
-    ...options,
-    headers: {
-      ...options.headers,
-      'Authorization': token ? `Bearer ${token}` : '',
-      'Content-Type': 'application/json',
-    },
-  });
-};
+// (Replaced by centralized apiFetch)

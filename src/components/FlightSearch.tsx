@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import apiFetch from '@/utils/apiFetch';
+import API_BASE_URL from '@/utils/apiBase';
 import { Plane, CalendarIcon, Users, Search, User, Baby } from 'lucide-react';
 import Loader from './Loader';
 import { cn } from '@/lib/utils';
@@ -80,7 +82,7 @@ const FlightSearch = () => {
   const fetchAirportOptions = async (keyword: string) => {
     if (keyword.length < 3) return { data: [], error: null, empty: false };
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/amadeus/locations/search?keyword=${encodeURIComponent(keyword)}`);
+      const res = await apiFetch(`${API_BASE_URL}/amadeus/locations/search?keyword=${encodeURIComponent(keyword)}`);
       if (!res.ok) {
         return { data: [], error: `Errore di ricerca`, empty: false };
       }
@@ -236,7 +238,7 @@ const FlightSearch = () => {
     setLoading(true);
     // Send booking search to backend
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
+      const res = await apiFetch(`${API_BASE_URL}/mail/send-mail`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

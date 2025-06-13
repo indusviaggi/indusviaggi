@@ -30,9 +30,21 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/flight/:id" element={<FlightDetails />} />
-            <Route path="/booking/:id" element={<Booking />} />
+            <Route path="/search" element={
+              <ProtectedRoute>
+                <SearchResults />
+              </ProtectedRoute>
+            } />
+            <Route path="/flight/:id" element={
+              <ProtectedRoute>
+                <FlightDetails />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:id" element={
+              <ProtectedRoute>
+                <Booking />
+              </ProtectedRoute>
+            } />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
