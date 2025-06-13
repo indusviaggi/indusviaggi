@@ -148,7 +148,7 @@ const Navbar = () => {
             ))}
             <li>
               <a aria-label="Chat on WhatsApp" href="https://wa.me/393889220982" target="_blank">
-                <img width="140px" alt="Chat on WhatsApp" src="WhatsAppButtonGreenMedium.png" />
+                <img width="140px" alt="Chat on WhatsApp" src="/public/WhatsAppButtonGreenMedium.png" />
               </a>
             </li>
           </ul>
@@ -283,7 +283,7 @@ const Navbar = () => {
             ))}
             <li>
               <a aria-label="Chat on WhatsApp" href="https://wa.me/393889220982" target="_blank">
-                <img width="140px" alt="Chat on WhatsApp" src="WhatsAppButtonGreenMedium.png" />
+                <img width="140px" alt="Chat on WhatsApp" src="/public/WhatsAppButtonGreenMedium.png" />
               </a>
             </li>
             {user ? (

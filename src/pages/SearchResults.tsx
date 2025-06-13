@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import apiFetch from '@/utils/apiFetch';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -45,6 +45,36 @@ const SearchResults = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+
+  // Last search state
+  const [lastSearch, setLastSearch] = useState<any>(null);
+  const [showLastSearch, setShowLastSearch] = useState(false);
+
+  // On mount, check for last search in localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('last_search');
+    if (saved) {
+      setLastSearch(JSON.parse(saved));
+      setShowLastSearch(true);
+    }
+  }, []);
+
+  // Handler to restore last search
+  const handleRestoreLastSearch = () => {
+    if (!lastSearch) return;
+    setFrom(lastSearch.from || '');
+    setFromValue(lastSearch.fromValue || '');
+    setTo(lastSearch.to || '');
+    setToValue(lastSearch.toValue || '');
+    setTripType(lastSearch.tripType || 'roundtrip');
+    setDepartDate(lastSearch.departDate ? new Date(lastSearch.departDate) : new Date());
+    setReturnDate(lastSearch.returnDate ? new Date(lastSearch.returnDate) : null);
+    setAdults(lastSearch.adults || 1);
+    setChildren(lastSearch.children || 0);
+    setInfants(lastSearch.infants || 0);
+    setCabinClass(lastSearch.cabinClass || 'economy');
+    setShowLastSearch(false);
+  };
 
   // Airport autocomplete state and logic
   const [originOptions, setOriginOptions] = useState<any[]>([]);
@@ -162,6 +192,11 @@ const SearchResults = () => {
       }
       const data = await res.json();
       setResult(data);
+      // Save search to localStorage
+      localStorage.setItem('last_search', JSON.stringify({
+        from, fromValue, to, toValue, tripType, departDate, returnDate, adults, children, infants, cabinClass
+      }));
+      setShowLastSearch(false);
     } catch (err) {
       setFormError('Errore di rete.');
     }
@@ -173,6 +208,14 @@ const SearchResults = () => {
       <Navbar />
       <div className="pt-24 pb-12">
         <div className="max-w-6xl mx-auto px-6">
+          {/* Last Search Button */}
+          {showLastSearch && lastSearch && (
+            <div className="mb-4 flex justify-end">
+              <Button variant="outline" size="sm" onClick={handleRestoreLastSearch}>
+                Usa ultima ricerca: {lastSearch.from} → {lastSearch.to} ({lastSearch.departDate ? new Date(lastSearch.departDate).toLocaleDateString() : ''})
+              </Button>
+            </div>
+          )}
           {/* Short Search Form */}
           <SearchForm
             formError={formError}
@@ -223,7 +266,20 @@ const SearchResults = () => {
             handleSubmit={handleSubmit}
             cabinClasses={cabinClasses}
           />
-           {(!loading && result) && (
+          {/* Airplane prompt box */}
+          {(!loading && !result) && (
+            <div className="flex justify-center">
+              <div className="bg-white/90 border border-sky-100 rounded-xl shadow-lg p-8 flex flex-col items-center max-w-md w-full">
+                <img src="/public/airplane.gif" alt="Airplane" />
+                <h2 className="text-xl font-bold text-navy-900 mb-2 flex items-center gap-2">
+                  <span>✈️</span> Pronto a partire?
+                </h2>
+                <p className="text-navy-700 text-center mb-2">Imposta le date, la destinazione e i passeggeri per trovare il tuo volo ideale!</p>
+                <p className="text-xs text-gray-500">Compila il modulo qui sopra e premi cerca.</p>
+              </div>
+            </div>
+          )}
+          {(!loading && result) && (
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-navy-900 mb-2">
               Da <span className="font-semibold">{from}</span> a <span className="font-semibold">{to}</span>
