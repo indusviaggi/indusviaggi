@@ -98,26 +98,38 @@ const Dashboard = () => {
               </div>
             </div>
             
+            {/* Totale Speso */}
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="flex items-center">
                 <div className="p-3 bg-green-100 rounded-lg">
-                  <MapPin className="h-6 w-6 text-green-600" />
+                  <CreditCard className="h-6 w-6 text-green-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Paesi visitati</p>
-                  <p className="text-2xl font-bold text-navy-900">12</p>
+                  <p className="text-sm text-gray-500">Totale Speso</p>
+                  <p className="text-2xl font-bold text-navy-900">
+                    €{bookings.reduce((sum, b) => {
+                      const flight = b.flight || b.booking?.flight;
+                      const price = Number(flight?.price) || 0;
+                      return sum + price;
+                    }, 0).toLocaleString('it-IT')}
+                  </p>
                 </div>
               </div>
             </div>
-            
+            {/* Compagnie Aeree Utilizzate */}
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="flex items-center">
                 <div className="p-3 bg-purple-100 rounded-lg">
-                  <Clock className="h-6 w-6 text-purple-600" />
+                  <Plane className="h-6 w-6 text-purple-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Miglia accumulate</p>
-                  <p className="text-2xl font-bold text-navy-900">25.420</p>
+                  <p className="text-sm text-gray-500">Compagnie Aeree Utilizzate</p>
+                  <p className="text-2xl font-bold text-navy-900">
+                    {Array.from(new Set(bookings.map(b => {
+                      const flight = b.flight || b.booking?.flight;
+                      return flight?.airlineName || flight?.departureItinerary?.segments?.[0]?.airlineName || flight?.departureItinerary?.segments?.[0]?.airLine;
+                    }).filter(Boolean))).length}
+                  </p>
                 </div>
               </div>
             </div>
