@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,10 +12,10 @@ const mockBookings = [
     id: '1',
     flightNumber: 'SW101',
     airline: 'Indus Viaggi Airlines',
-    route: 'New York → London',
+    route: 'New York → Londra',
     date: '2024-06-15',
     time: '08:00 - 20:00',
-    status: 'confirmed',
+    status: 'confermato',
     price: 599,
     seat: '12A'
   },
@@ -24,10 +23,10 @@ const mockBookings = [
     id: '2',
     flightNumber: 'GW205',
     airline: 'Global Wings',
-    route: 'London → Paris',
+    route: 'Londra → Parigi',
     date: '2024-06-20',
     time: '14:30 - 16:00',
-    status: 'pending',
+    status: 'in attesa',
     price: 249,
     seat: '15C'
   }
@@ -40,9 +39,9 @@ const Dashboard = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'text-green-600 bg-green-100';
-      case 'pending': return 'text-yellow-600 bg-yellow-100';
-      case 'cancelled': return 'text-red-600 bg-red-100';
+      case 'confermato': return 'text-green-600 bg-green-100';
+      case 'in attesa': return 'text-yellow-600 bg-yellow-100';
+      case 'cancellato': return 'text-red-600 bg-red-100';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -55,10 +54,10 @@ const Dashboard = () => {
         <div className="max-w-6xl mx-auto px-6">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-navy-900 mb-2">
-              Welcome back, {user?.name}!
+              Bentornato, {user?.name}!
             </h1>
             <p className="text-navy-600">
-              Manage your bookings and account settings
+              Gestisci le tue prenotazioni e le impostazioni dell'account
             </p>
           </div>
 
@@ -69,7 +68,7 @@ const Dashboard = () => {
                   <Plane className="h-6 w-6 text-gold-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Total Bookings</p>
+                  <p className="text-sm text-gray-500">Prenotazioni totali</p>
                   <p className="text-2xl font-bold text-navy-900">{mockBookings.length}</p>
                 </div>
               </div>
@@ -81,7 +80,7 @@ const Dashboard = () => {
                   <Calendar className="h-6 w-6 text-sky-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Upcoming Trips</p>
+                  <p className="text-sm text-gray-500">Viaggi in arrivo</p>
                   <p className="text-2xl font-bold text-navy-900">
                     {mockBookings.filter(b => new Date(b.date) > new Date()).length}
                   </p>
@@ -95,7 +94,7 @@ const Dashboard = () => {
                   <MapPin className="h-6 w-6 text-green-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Countries Visited</p>
+                  <p className="text-sm text-gray-500">Paesi visitati</p>
                   <p className="text-2xl font-bold text-navy-900">12</p>
                 </div>
               </div>
@@ -107,8 +106,8 @@ const Dashboard = () => {
                   <Clock className="h-6 w-6 text-purple-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-gray-500">Miles Earned</p>
-                  <p className="text-2xl font-bold text-navy-900">25,420</p>
+                  <p className="text-sm text-gray-500">Miglia accumulate</p>
+                  <p className="text-2xl font-bold text-navy-900">25.420</p>
                 </div>
               </div>
             </div>
@@ -118,9 +117,8 @@ const Dashboard = () => {
             <div className="border-b border-gray-200">
               <nav className="flex space-x-8 px-6">
                 {[
-                  { id: 'bookings', label: 'My Bookings', icon: Plane },
-                  { id: 'profile', label: 'Profile', icon: User },
-                  { id: 'payment', label: 'Payment Methods', icon: CreditCard }
+                  { id: 'bookings', label: 'Le mie prenotazioni', icon: Plane },
+                  { id: 'profile', label: 'Profilo', icon: User },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -142,12 +140,12 @@ const Dashboard = () => {
               {activeTab === 'bookings' && (
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-navy-900">Your Bookings</h3>
+                    <h3 className="text-lg font-semibold text-navy-900">Le tue prenotazioni</h3>
                     <Button 
                       onClick={() => navigate('/search')}
                       className="bg-gold-500 hover:bg-gold-600 text-white"
                     >
-                      Book New Flight
+                      Prenota nuovo volo
                     </Button>
                   </div>
                   
@@ -164,13 +162,13 @@ const Dashboard = () => {
                           </div>
                           <div className="text-gray-600 mb-1">{booking.route}</div>
                           <div className="text-sm text-gray-500">
-                            {new Date(booking.date).toLocaleDateString()} • {booking.time} • Seat {booking.seat}
+                            {new Date(booking.date).toLocaleDateString('it-IT')} • {booking.time} • Posto {booking.seat}
                           </div>
                         </div>
                         <div className="mt-4 md:mt-0 text-right">
-                          <div className="text-xl font-bold text-navy-900">${booking.price}</div>
+                          <div className="text-xl font-bold text-navy-900">€{booking.price}</div>
                           <Button variant="outline" size="sm" className="mt-2">
-                            View Details
+                            Dettagli
                           </Button>
                         </div>
                       </div>
@@ -181,10 +179,10 @@ const Dashboard = () => {
 
               {activeTab === 'profile' && (
                 <div className="max-w-md">
-                  <h3 className="text-lg font-semibold text-navy-900 mb-4">Profile Information</h3>
+                  <h3 className="text-lg font-semibold text-navy-900 mb-4">Informazioni profilo</h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nome completo</label>
                       <input 
                         type="text" 
                         value={user?.name || ''} 
@@ -202,7 +200,7 @@ const Dashboard = () => {
                       />
                     </div>
                     <Button className="bg-gold-500 hover:bg-gold-600 text-white">
-                      Edit Profile
+                      Modifica profilo
                     </Button>
                   </div>
                 </div>
@@ -210,12 +208,12 @@ const Dashboard = () => {
 
               {activeTab === 'payment' && (
                 <div>
-                  <h3 className="text-lg font-semibold text-navy-900 mb-4">Payment Methods</h3>
+                  <h3 className="text-lg font-semibold text-navy-900 mb-4">Metodi di pagamento</h3>
                   <div className="bg-gray-50 p-6 rounded-lg text-center">
                     <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 mb-4">No payment methods added yet</p>
+                    <p className="text-gray-600 mb-4">Nessun metodo di pagamento aggiunto</p>
                     <Button className="bg-gold-500 hover:bg-gold-600 text-white">
-                      Add Payment Method
+                      Aggiungi metodo di pagamento
                     </Button>
                   </div>
                 </div>
