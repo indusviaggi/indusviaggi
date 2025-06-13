@@ -1,25 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import apiFetch from '@/utils/apiFetch';
+import { formatDateLocal } from '@/utils/formatDateLocal';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SearchForm from '@/components/SearchForm';
 import ResultsLoader from '@/components/ResultsLoader';
 import ResultsList from '@/components/ResultsList';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { CalendarIcon, Users, User, Baby } from 'lucide-react';
 
 const cabinClasses = [
   { id: 'economy', label: 'Economy' },
@@ -170,14 +157,14 @@ const SearchResults = () => {
     const payload: any = {
       originLocationCode: fromValue,
       destinationLocationCode: toValue,
-      departureDate: departDate instanceof Date ? departDate.toISOString().split('T')[0] : departDate,
+      departureDate: formatDateLocal(departDate),
       adults,
       children,
       infants,
       travelClass: cabinClass.toUpperCase(),
     };
     if (tripType === 'roundtrip' && returnDate) {
-      payload.returnDate = returnDate instanceof Date ? returnDate.toISOString().split('T')[0] : returnDate;
+      payload.returnDate =  formatDateLocal(returnDate);
     }
     try {
       const res = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/amadeus/flights/search`, {

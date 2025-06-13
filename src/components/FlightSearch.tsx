@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { validateEmail, validatePhone } from '@/utils/validation';
+import { formatDateLocal } from '@/utils/formatDateLocal';
 import apiFetch from '@/utils/apiFetch';
 import API_BASE_URL from '@/utils/apiBase';
 import { Plane, CalendarIcon, Users, Search, User, Baby } from 'lucide-react';
@@ -218,7 +219,6 @@ const FlightSearch = () => {
       return;
     }
     setLoading(true);
-    // Send booking search to backend
     try {
       const res = await apiFetch(`${API_BASE_URL}/mail/send-mail`, {
         method: 'POST',
@@ -227,8 +227,8 @@ const FlightSearch = () => {
           type: 'booking',
           origin,
           destination,
-          departureDate: format(departureDate, "yyyy-MM-dd"),
-          returnDate: tripType === 'roundtrip' && returnDate ? format(returnDate, "yyyy-MM-dd") : null,
+          departureDate: departureDate ? formatDateLocal(departureDate) : '',
+          returnDate: tripType === 'roundtrip' && returnDate ? formatDateLocal(returnDate) : null,
           tripType,
           adults,
           children,
@@ -388,7 +388,7 @@ const FlightSearch = () => {
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {departureDate ? format(departureDate, "PPP") : <span>Aggiungi Data</span>}
+                        {departureDate ? formatDateLocal(departureDate) : <span>Aggiungi Data</span>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -469,7 +469,7 @@ const FlightSearch = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {returnDate ? format(returnDate, "PPP") : <span>Aggiungi Data</span>}
+                          {returnDate ? formatDateLocal(returnDate) : <span>Aggiungi Data</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">

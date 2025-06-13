@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatDateLocal } from '@/utils/formatDateLocal';
 import AirportAutocomplete from '@/components/AirportAutocomplete';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -158,7 +159,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
             className={`p-2 border border-gray-200 rounded flex items-center w-full md:w-40 min-w-[150px] ${!departDate ? 'text-muted-foreground' : ''}`}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {departDate ? departDate.toLocaleDateString('it-IT') : <span>Partenza</span>}
+            {departDate ? formatDateLocal(departDate) : <span>Partenza</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -181,7 +182,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
               className={`p-2 border border-gray-200 rounded flex items-center w-full md:w-40 min-w-[150px] ${!returnDate ? 'text-muted-foreground' : ''}`}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {returnDate ? returnDate.toLocaleDateString('it-IT') : <span>Ritorno</span>}
+              {returnDate ? formatDateLocal(returnDate) : <span>Ritorno</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">

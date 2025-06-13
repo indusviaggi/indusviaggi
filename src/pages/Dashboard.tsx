@@ -1,46 +1,52 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import apiFetch from '@/utils/apiFetch';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Plane, Calendar, MapPin, Clock, User, CreditCard } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import FlightDetailsDialog from '@/components/FlightDetailsDialog';
 
-// Mock bookings data
-const mockBookings = [
-  {
-    id: '1',
-    flightNumber: 'SW101',
-    airline: 'Indus Viaggi Airlines',
-    route: 'New York → Londra',
-    date: '2024-06-15',
-    time: '08:00 - 20:00',
-    status: 'confermato',
-    price: 599,
-    seat: '12A'
-  },
-  {
-    id: '2',
-    flightNumber: 'GW205',
-    airline: 'Global Wings',
-    route: 'Londra → Parigi',
-    date: '2024-06-20',
-    time: '14:30 - 16:00',
-    status: 'in attesa',
-    price: 249,
-    seat: '15C'
-  }
-];
+// Bookings state from API
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('bookings');
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+  const [errorBookings, setErrorBookings] = useState<string | null>(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [selectedFlight, setSelectedFlight] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchBookings() {
+      setLoadingBookings(true);
+      setErrorBookings(null);
+      try {
+        const res = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/bookings/my`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          setBookings(data.data);
+        } else {
+          setErrorBookings('Errore nel recupero delle prenotazioni');
+        }
+      } catch (err) {
+        setErrorBookings('Errore di rete');
+      }
+      setLoadingBookings(false);
+    }
+    fetchBookings();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
+      case 'booked':
       case 'confermato': return 'text-green-600 bg-green-100';
+      case 'pending':
       case 'in attesa': return 'text-yellow-600 bg-yellow-100';
+      case 'cancelled':
       case 'cancellato': return 'text-red-600 bg-red-100';
       default: return 'text-gray-600 bg-gray-100';
     }
@@ -69,7 +75,7 @@ const Dashboard = () => {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm text-gray-500">Prenotazioni totali</p>
-                  <p className="text-2xl font-bold text-navy-900">{mockBookings.length}</p>
+                  <p className="text-2xl font-bold text-navy-900">{bookings.length}</p>
                 </div>
               </div>
             </div>
@@ -82,7 +88,10 @@ const Dashboard = () => {
                 <div className="ml-4">
                   <p className="text-sm text-gray-500">Viaggi in arrivo</p>
                   <p className="text-2xl font-bold text-navy-900">
-                    {mockBookings.filter(b => new Date(b.date) > new Date()).length}
+                    {bookings.filter(b => {
+                      const depSeg = b.flight?.departureItinerary?.segments?.[0];
+                      return depSeg && new Date(depSeg.departureTime) > new Date();
+                    }).length}
                   </p>
                 </div>
               </div>
@@ -149,31 +158,67 @@ const Dashboard = () => {
                     </Button>
                   </div>
                   
-                  {mockBookings.map((booking) => (
-                    <div key={booking.id} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center mb-2">
-                            <span className="font-semibold text-navy-900">{booking.flightNumber}</span>
-                            <span className="text-gray-500 ml-2">{booking.airline}</span>
-                            <span className={`ml-4 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
-                              {booking.status}
-                            </span>
-                          </div>
-                          <div className="text-gray-600 mb-1">{booking.route}</div>
-                          <div className="text-sm text-gray-500">
-                            {new Date(booking.date).toLocaleDateString('it-IT')} • {booking.time} • Posto {booking.seat}
+                  {loadingBookings ? (
+                    <div className="text-center text-navy-700 py-8">Caricamento prenotazioni...</div>
+                  ) : errorBookings ? (
+                    <div className="text-center text-red-700 py-8">{errorBookings}</div>
+                  ) : bookings.length === 0 ? (
+                    <div className="text-center text-navy-700 py-8">Nessuna prenotazione trovata.</div>
+                  ) : (
+                    bookings.map((b, idx) => {
+                      const booking = b.booking;
+                      const flight = b.flight || booking.flight;
+                      const passenger = (b.passengers && b.passengers[0]) || b.passenger;
+                      const depSeg = flight?.departureItinerary?.segments?.[0];
+                      const retSeg = flight?.returnItinerary?.segments?.[0];
+                      return (
+                        <div key={booking._id || idx} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex flex-col md:flex-row md:items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center mb-2">
+                                <span className="font-semibold text-navy-900">{flight?.flightNumber || depSeg?.flightNumber}</span>
+                                <span className="text-gray-500 ml-2">{flight?.airlineName || depSeg?.airlineName || depSeg?.airLine}</span>
+                                <span className={`ml-4 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                                  {booking.status}
+                                </span>
+                              </div>
+                              <div className="text-gray-600 mb-1">
+                                {depSeg?.from} → {depSeg?.to} {retSeg ? ` / ${retSeg.from} → ${retSeg.to}` : ''}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {depSeg && new Date(depSeg.departureTime).toLocaleDateString('it-IT')}
+                                {retSeg && (
+                                  <>
+                                    {' '}↔{' '}
+                                    {new Date(retSeg.departureTime).toLocaleDateString('it-IT')}
+                                  </>
+                                )}
+                                {' • '}Classe {flight?.travelClass} • {flight?.ticketType}
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                Passeggeri: {Array.isArray(b.passengers) ? b.passengers.length : 1}
+                                {passenger?.name && ` • ${passenger.name}`} {passenger?.surname && passenger?.surname} {passenger?.email && `• ${passenger.email}`} {passenger?.phone && `• ${passenger.phone}`}
+                              </div>
+                            </div>
+                            <div className="mt-4 md:mt-0 text-right">
+                              <div className="text-xl font-bold text-navy-900">€{flight?.price}</div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="mt-2"
+                                onClick={() => {
+                                  setSelectedFlight(flight);
+                                  setDetailsDialogOpen(true);
+                                }}
+                              >
+                                Dettagli
+                              </Button>
+                            </div>
                           </div>
                         </div>
-                        <div className="mt-4 md:mt-0 text-right">
-                          <div className="text-xl font-bold text-navy-900">€{booking.price}</div>
-                          <Button variant="outline" size="sm" className="mt-2">
-                            Dettagli
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                      );
+                    })
+                  )}
                 </div>
               )}
 
@@ -223,6 +268,12 @@ const Dashboard = () => {
         </div>
       </div>
       
+      <FlightDetailsDialog
+        open={detailsDialogOpen}
+        onClose={() => setDetailsDialogOpen(false)}
+        flight={selectedFlight}
+        showBookButton={false}
+      />
       <Footer />
     </div>
   );

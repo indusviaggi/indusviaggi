@@ -49,7 +49,7 @@ const BookingDialog = ({ open, onClose, flight }: {
     try {
       const bookingPayload = {
         flight: flight,
-        booking: { status: 'booked' },
+        booking: { status: 'pending' },
         passenger: {
           name: form.firstName,
           surname: form.lastName,

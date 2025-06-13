@@ -2,11 +2,12 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-const FlightDetailsDialog = ({ open, onClose, flight, onBook }: {
+const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = true }: {
   open: boolean;
   onClose: () => void;
   flight: any;
   onBook?: (flight: any) => void;
+  showBookButton?: boolean;
 }) => {
   if (!flight) return null;
 
@@ -165,12 +166,14 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook }: {
             >
               Chiudi
             </Button>
-            <Button 
-              onClick={() => onBook && onBook(flight)}
-              className="flex-1 bg-gold-500 hover:bg-gold-600 text-white text-xs sm:text-base"
-            >
-              Prenota questo volo
-            </Button>
+            {showBookButton && (
+              <Button 
+                onClick={() => onBook && onBook(flight)}
+                className="flex-1 bg-gold-500 hover:bg-gold-600 text-white text-xs sm:text-base"
+              >
+                Prenota questo volo
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>
