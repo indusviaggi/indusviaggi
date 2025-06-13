@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import apiFetch from '@/utils/apiFetch';
+import { validateEmail, validatePhone } from '@/utils/validation';
 
 const BookingDialog = ({ open, onClose, flight }: {
   open: boolean;
@@ -14,6 +16,63 @@ const BookingDialog = ({ open, onClose, flight }: {
     email: '',
     phone: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  async function handleBooking(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    // Validation: name and surname required, at least one of email or phone
+    if (!form.firstName.trim() || !form.lastName.trim()) {
+      setError('Nome e cognome sono obbligatori.');
+      setLoading(false);
+      return;
+    }
+    if (!form.email.trim() && !form.phone.trim()) {
+      setError('Inserisci almeno email o telefono.');
+      setLoading(false);
+      return;
+    }
+    if (form.email.trim() && !validateEmail(form.email.trim())) {
+      setError('Email non valida.');
+      setLoading(false);
+      return;
+    }
+    if (form.phone.trim() && !validatePhone(form.phone.trim())) {
+      setError('Numero di telefono non valido.');
+      setLoading(false);
+      return;
+    }
+    try {
+      const bookingPayload = {
+        flight: flight,
+        booking: { status: 'booked' },
+        passenger: {
+          name: form.firstName,
+          surname: form.lastName,
+          phone: form.phone,
+          email: form.email
+        }
+      };
+      // Replace with your actual endpoint
+      const res = await apiFetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/bookings`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bookingPayload)
+        }
+      );
+      if (!res.ok) throw new Error('Errore durante la prenotazione');
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message || 'Errore di rete');
+    }
+    setLoading(false);
+  }
 
   if (!flight) return null;
 
@@ -91,7 +150,13 @@ const BookingDialog = ({ open, onClose, flight }: {
             )}
           </div>
           {/* User Fields */}
-          <form className="space-y-4">
+          {success ? (
+            <div className="text-center text-green-700 font-semibold text-lg py-8">
+              Prenotazione effettuata con successo!<br />Riceverai una conferma via email.
+              <Button className="mt-6" onClick={onClose}>Chiudi</Button>
+            </div>
+          ) : (
+          <form className="space-y-4" onSubmit={handleBooking}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs sm:text-base font-medium mb-1">Nome</label>
@@ -134,8 +199,12 @@ const BookingDialog = ({ open, onClose, flight }: {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full bg-gold-500 hover:bg-gold-600 text-white text-xs sm:text-base">Conferma Prenotazione</Button>
+            {error && <div className="text-red-600 text-xs mb-2">{error}</div>}
+            <Button type="submit" disabled={loading} className="w-full bg-gold-500 hover:bg-gold-600 text-white text-xs sm:text-base">
+              {loading ? 'Prenotazione in corso...' : 'Conferma Prenotazione'}
+            </Button>
           </form>
+          )}
           <Button onClick={onClose} variant="outline" className="w-full mt-4 text-xs sm:text-base">Annulla</Button>
         </div>
       </DialogContent>

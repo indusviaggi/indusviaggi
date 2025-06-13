@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { validateEmail, validatePhone } from '@/utils/validation';
 import apiFetch from '@/utils/apiFetch';
 import API_BASE_URL from '@/utils/apiBase';
 import { Plane, CalendarIcon, Users, Search, User, Baby } from 'lucide-react';
@@ -184,30 +185,11 @@ const FlightSearch = () => {
         return 'La data di ritorno deve essere dopo la partenza.';
       }
     }
-    if (!isValidEmail(contact.trim()) && !isValidPhone(contact.trim())) {
+    if (!validateEmail(contact.trim()) && !validatePhone(contact.trim())) {
       return "Inserisci un'email o un numero di telefono valido";
     }
     return null;
   };
-
-  function isValidEmail(email: string): boolean {
-    // Basic email regex
-    console.log(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
-  function isValidPhone(phone: string): boolean {
-      // Remove spaces, dashes, parentheses
-      let cleaned = phone.replace(/[\s\-().]/g, '');
-      // Accept + or 00 at the start for country code
-      if (cleaned.startsWith('+')) {
-        cleaned = cleaned.slice(1);
-      } else if (cleaned.startsWith('00')) {
-        cleaned = cleaned.slice(2);
-      }
-      // After removing country code, must be all digits and 7-15 digits
-      return /^\d{7,15}$/.test(cleaned);
-  }
 
   // Reset form fields
   const resetForm = () => {
