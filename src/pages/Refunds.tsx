@@ -87,9 +87,10 @@ const Refunds = () => {
                 Per assistenza con i rimborsi:
               </p>
               <p className="text-gray-700">
-                <strong>Email:</strong> rimborsi@indusviaggi.com<br/>
-                <strong>Telefono:</strong> +39 02 1234 5678<br/>
-                <strong>Orari:</strong> Lun-Ven 9:00-18:00, Sab 9:00-13:00
+                <strong>Email:</strong> indusviaggi@gmail.com<br/>
+                <strong>Telefono/WhatsApp:</strong> +39 388 822 0982<br/>
+                <strong>Ufficio: </strong> 0522 434 627<br/>
+                <strong>Indirizzo: </strong> Via Don Giovanni Alai 6/A Reggio Emilia, RE 42121<br/>
               </p>
             </div>
           </div>

@@ -108,9 +108,10 @@ const Privacy = () => {
                 puoi contattarci all'indirizzo:
               </p>
               <p className="text-gray-700">
-                <strong>Email:</strong> privacy@indusviaggi.com<br/>
-                <strong>Telefono:</strong> +39 02 1234 5678<br/>
-                <strong>Indirizzo:</strong> Via Roma 123, 20100 Milano, Italia
+                <strong>Email:</strong> indusviaggi@gmail.com<br/>
+                <strong>Telefono/WhatsApp:</strong> +39 388 822 0982<br/>
+                <strong>Ufficio: </strong> 0522 434 627<br/>
+                <strong>Indirizzo: </strong> Via Don Giovanni Alai 6/A Reggio Emilia, RE 42121<br/>
               </p>
             </div>
           </div>

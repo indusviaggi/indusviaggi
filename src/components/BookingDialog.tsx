@@ -59,7 +59,7 @@ const BookingDialog = ({ open, onClose, flight }: {
       };
       // Replace with your actual endpoint
       const res = await apiFetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/bookings`,
+        `${import.meta.env.VITE_API_BASE_URL}/bookings/full`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -107,10 +107,6 @@ const BookingDialog = ({ open, onClose, flight }: {
                 <div className="space-y-2">
                   {flight.departureItinerary?.segments?.map((seg: any, idx: number) => (
                     <div key={idx} className="rounded-lg bg-sky-50 border border-sky-100 p-3 flex items-center gap-3">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[10px] sm:text-xs font-bold text-sky-700">Andata</span>
-                        <span className="text-lg">🛫</span>
-                      </div>
                       <div className="flex-1">
                         <div className="text-xs sm:text-base font-semibold text-navy-900">{seg.from} <span className="text-gray-400">→</span> {seg.to}</div>
                         <div className="text-xs sm:text-sm text-gray-700">
@@ -127,10 +123,6 @@ const BookingDialog = ({ open, onClose, flight }: {
                   ))}
                   {flight.returnItinerary?.segments?.map((seg: any, idx: number) => (
                     <div key={"ret-"+idx} className="rounded-lg bg-gold-50 border border-gold-100 p-3 flex items-center gap-3">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[10px] sm:text-xs font-bold text-gold-700">Ritorno</span>
-                        <span className="text-lg">🛬</span>
-                      </div>
                       <div className="flex-1">
                         <div className="text-xs sm:text-base font-semibold text-navy-900">{seg.from} <span className="text-gray-400">→</span> {seg.to}</div>
                         <div className="text-xs sm:text-sm text-gray-700">
@@ -152,14 +144,13 @@ const BookingDialog = ({ open, onClose, flight }: {
           {/* User Fields */}
           {success ? (
             <div className="text-center text-green-700 font-semibold text-lg py-8">
-              Prenotazione effettuata con successo!<br />Riceverai una conferma via email.
-              <Button className="mt-6" onClick={onClose}>Chiudi</Button>
+              Prenotazione effettuata con successo!
             </div>
           ) : (
           <form className="space-y-4" onSubmit={handleBooking}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs sm:text-base font-medium mb-1">Nome</label>
+                <label className="block text-xs sm:text-base font-medium mb-1">Nome *</label>
                 <input
                   type="text"
                   value={form.firstName}
@@ -169,7 +160,7 @@ const BookingDialog = ({ open, onClose, flight }: {
                 />
               </div>
               <div>
-                <label className="block text-xs sm:text-base font-medium mb-1">Cognome</label>
+                <label className="block text-xs sm:text-base font-medium mb-1">Cognome *</label>
                 <input
                   type="text"
                   value={form.lastName}
@@ -205,7 +196,7 @@ const BookingDialog = ({ open, onClose, flight }: {
             </Button>
           </form>
           )}
-          <Button onClick={onClose} variant="outline" className="w-full mt-4 text-xs sm:text-base">Annulla</Button>
+          <Button onClick={onClose} variant="outline" className="w-full mt-4 text-xs sm:text-base">Chiudi</Button>
         </div>
       </DialogContent>
     </Dialog>
