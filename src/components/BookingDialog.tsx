@@ -12,10 +12,7 @@ const BookingDialog = ({ open, onClose, flight }: {
     firstName: '',
     lastName: '',
     email: '',
-    phone: '',
-    cardNumber: '',
-    expiry: '',
-    cvv: ''
+    phone: ''
   });
 
   if (!flight) return null;
@@ -61,10 +58,10 @@ const BookingDialog = ({ open, onClose, flight }: {
                           <span className="font-semibold">Compagnia:</span> {seg.airlineName || seg.airLine} <span className="ml-2 font-semibold">{seg.flightNumber}</span>
                         </div>
                         <div className="text-xs sm:text-sm text-gray-700">
-                          <span className="font-semibold">Partenza:</span> {seg.departureTime ? new Date(seg.departureTime).toLocaleString() : ''}
+                          <span className="font-semibold">Partenza:</span> {seg.departureTime ? new Date(seg.departureTime).toLocaleString('it-IT') : ''}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-700">
-                          <span className="font-semibold">Arrivo:</span> {seg.arrivalTime ? new Date(seg.arrivalTime).toLocaleString() : ''}
+                          <span className="font-semibold">Arrivo:</span> {seg.arrivalTime ? new Date(seg.arrivalTime).toLocaleString('it-IT') : ''}
                         </div>
                       </div>
                     </div>
@@ -81,10 +78,10 @@ const BookingDialog = ({ open, onClose, flight }: {
                           <span className="font-semibold">Compagnia:</span> {seg.airlineName || seg.airLine} <span className="ml-2 font-semibold">{seg.flightNumber}</span>
                         </div>
                         <div className="text-xs sm:text-sm text-gray-700">
-                          <span className="font-semibold">Partenza:</span> {seg.departureTime ? new Date(seg.departureTime).toLocaleString() : ''}
+                          <span className="font-semibold">Partenza:</span> {seg.departureTime ? new Date(seg.departureTime).toLocaleString('it-IT') : ''}
                         </div>
                         <div className="text-xs sm:text-sm text-gray-700">
-                          <span className="font-semibold">Arrivo:</span> {seg.arrivalTime ? new Date(seg.arrivalTime).toLocaleString() : ''}
+                          <span className="font-semibold">Arrivo:</span> {seg.arrivalTime ? new Date(seg.arrivalTime).toLocaleString('it-IT') : ''}
                         </div>
                       </div>
                     </div>
@@ -93,11 +90,11 @@ const BookingDialog = ({ open, onClose, flight }: {
               </div>
             )}
           </div>
-          {/* User and Payment Fields */}
+          {/* User Fields */}
           <form className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs sm:text-base font-medium mb-1">First Name</label>
+                <label className="block text-xs sm:text-base font-medium mb-1">Nome</label>
                 <input
                   type="text"
                   value={form.firstName}
@@ -107,7 +104,7 @@ const BookingDialog = ({ open, onClose, flight }: {
                 />
               </div>
               <div>
-                <label className="block text-xs sm:text-base font-medium mb-1">Last Name</label>
+                <label className="block text-xs sm:text-base font-medium mb-1">Cognome</label>
                 <input
                   type="text"
                   value={form.lastName}
@@ -127,7 +124,7 @@ const BookingDialog = ({ open, onClose, flight }: {
                 />
               </div>
               <div>
-                <label className="block text-xs sm:text-base font-medium mb-1">Phone</label>
+                <label className="block text-xs sm:text-base font-medium mb-1">Telefono</label>
                 <input
                   type="tel"
                   value={form.phone}
@@ -137,7 +134,7 @@ const BookingDialog = ({ open, onClose, flight }: {
                 />
               </div>
             </div>
-                        <Button type="submit" className="w-full bg-gold-500 hover:bg-gold-600 text-white text-xs sm:text-base">Conferma Prenotazione</Button>
+            <Button type="submit" className="w-full bg-gold-500 hover:bg-gold-600 text-white text-xs sm:text-base">Conferma Prenotazione</Button>
           </form>
           <Button onClick={onClose} variant="outline" className="w-full mt-4 text-xs sm:text-base">Annulla</Button>
         </div>

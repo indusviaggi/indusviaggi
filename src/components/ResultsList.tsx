@@ -291,7 +291,7 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
                           setSelectedFlight(flight);
                           setDialogOpen(true);
                         }}
-                      >Select Flight</button>
+                      >Seleziona volo</button>
                     </div>
                   </div>
                 </div>
