@@ -36,12 +36,12 @@ const Dashboard = () => {
   const [dateFrom, setDateFrom] = useState(firstDayStr);
   const [dateTo, setDateTo] = useState(lastDayStr);
   // New: Date Type Filter
-  const [dateType, setDateType] = useState<'createdAt' | 'departure' | 'arrival'>('createdAt');
+  const [dateType, setDateType] = useState('createdAt');
   // For staged filter values
   const [pendingStatus, setPendingStatus] = useState('all');
   const [pendingDateFrom, setPendingDateFrom] = useState(firstDayStr);
   const [pendingDateTo, setPendingDateTo] = useState(lastDayStr);
-  const [pendingDateType, setPendingDateType] = useState<'createdAt' | 'departure' | 'arrival'>('createdAt');
+  const [pendingDateType, setPendingDateType] = useState('createdAt');
 
   // Fetch bookings with filters
   async function fetchBookings({

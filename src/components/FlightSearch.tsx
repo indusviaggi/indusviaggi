@@ -620,7 +620,7 @@ const FlightSearch = () => {
             
             <button 
               onClick={handleSearch}
-              className="w-full btn-accent flex items-center justify-center space-x-2"
+              className="w-full sm:w-auto btn-accent flex items-center justify-center space-x-2"
               disabled={loading}
             >
               {loading ? <Loader /> : <Search className="h-5 w-5" />}

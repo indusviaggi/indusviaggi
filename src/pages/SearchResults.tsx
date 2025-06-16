@@ -201,7 +201,7 @@ const SearchResults = () => {
           {/* Last Search Button */}
           {showLastSearch && lastSearch && (
             <div className="mb-4 flex justify-end">
-              <Button variant="outline" size="sm" onClick={handleRestoreLastSearch}>
+              <Button variant="outline" size="sm" className="w-full sm:w-auto whitespace-normal break-words truncate max-w-xs text-xs" onClick={handleRestoreLastSearch}>
                 Usa ultima ricerca: {lastSearch.from} → {lastSearch.to} ({lastSearch.departDate ? formatDateLocal(new Date(lastSearch.departDate), 'IT') : ''})
               </Button>
             </div>
