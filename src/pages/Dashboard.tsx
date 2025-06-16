@@ -209,10 +209,15 @@ const Dashboard = () => {
                                 {' • '}Classe {flight?.travelClass} • {flight?.ticketType}
                               </div>
                               <div className="text-xs text-gray-500 mt-1">
-                                Passeggeri: {Array.isArray(b.passengers) ? b.passengers.length : 1}
+                                Passeggeri: {(flight?.adults || 0) + (flight?.children || 0) + (flight?.infants || 0)}
                                 {passenger?.name && ` • ${passenger.name}`} {passenger?.surname && passenger?.surname} {passenger?.email && `• ${passenger.email}`} {passenger?.phone && `• ${passenger.phone}`}
                               </div>
-                            </div>
+                              {(flight?.adults || flight?.children || flight?.infants) && (
+                                <div className="text-xs text-gray-500 mt-1">
+                                  <span className="font-semibold">Adulti:</span> {flight?.adults || 0} <span className="font-semibold ml-2">Bambini:</span> {flight?.children || 0} <span className="font-semibold ml-2">Neonati:</span> {flight?.infants || 0}
+                                </div>
+                              )}
+                                                          </div>
                             <div className="mt-4 md:mt-0 text-right">
                               <div className="text-xl font-bold text-navy-900">€{flight?.price}</div>
                               <Button

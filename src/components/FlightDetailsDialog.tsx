@@ -90,21 +90,60 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = t
               <div className="text-base sm:text-3xl font-bold text-navy-900 mb-2">€{flight.price}</div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-4 mb-8">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 mb-6 items-center">
             {flight.travelClass && (
               <div className="text-xs sm:text-base"><span className="font-semibold">Classe:</span> {flight.travelClass}</div>
             )}
             {flight.ticketType && (
-              <div className="text-xs sm:text-base"><span className="font-semibold">Tipo biglietto:</span> {flight.ticketType}</div>
+              <div className="text-xs sm:text-base"><span className="font-semibold">Tipo:</span> {flight.ticketType}</div>
             )}
             {flight.bookedTickets && (
-              <div className="text-xs sm:text-base"><span className="font-semibold">Biglietti prenotati:</span> {flight.bookedTickets}</div>
+              <div className="text-xs sm:text-base"><span className="font-semibold">Prenotati:</span> {flight.bookedTickets}</div>
+            )}
+            {(flight.adults || flight.children || flight.infants) && (
+              <div className="text-xs sm:text-base">
+                <span className="font-semibold">Passeggeri:</span>
+                {flight.adults ? ` A:${flight.adults}` : ''}
+                {flight.children ? ` B:${flight.children}` : ''}
+                {flight.infants ? ` N:${flight.infants}` : ''}
+              </div>
+            )}
+            {Array.isArray(flight.passengerPrices) && flight.passengerPrices.length > 0 && (
+              <div className="text-xs sm:text-base flex flex-wrap items-center">
+                <span className="font-semibold mr-1">Prezzi:</span>
+                <span className="flex flex-wrap gap-1">
+                  {(() => {
+                    // Group by travelerType and price
+                    const grouped: Record<string, { count: number, price: any }> = {};
+                    flight.passengerPrices.forEach((p: any) => {
+                      const key = `${p.travelerType}_${p.price.total}_${p.price.currency}`;
+                      if (!grouped[key]) grouped[key] = { count: 0, price: p.price };
+                      grouped[key].count++;
+                    });
+                    return Object.entries(grouped).map(([key, val], idx) => {
+                      let label = '';
+                      if (val.price && val.price.currency) {
+                        if (key.startsWith('ADULT')) label = 'A';
+                        else if (key.startsWith('CHILD')) label = 'B';
+                        else if (key.startsWith('HELD_INFANT')) label = 'N';
+                        else label = key.split('_')[0];
+                        return (
+                          <span key={idx} className="bg-gray-100 rounded px-2 py-0.5 inline-block">
+                            {label}x{val.count}: €{val.price.total}
+                          </span>
+                        );
+                      }
+                      return null;
+                    });
+                  })()}
+                </span>
+              </div>
             )}
             {flight.baggage && (
               <div className="text-xs sm:text-base"><span className="font-semibold">Bagagli:</span> {Array.isArray(flight.baggage) ? flight.baggage.join(', ') : flight.baggage}</div>
             )}
             {flight.cabinBags && (
-              <div className="text-xs sm:text-base"><span className="font-semibold">Bagagli a mano:</span> {Array.isArray(flight.cabinBags) ? flight.cabinBags.join(', ') : flight.cabinBags}</div>
+              <div className="text-xs sm:text-base"><span className="font-semibold">Bag. a mano:</span> {Array.isArray(flight.cabinBags) ? flight.cabinBags.join(', ') : flight.cabinBags}</div>
             )}
             {flight.amenities && (
               <div className="text-xs sm:text-base"><span className="font-semibold">Servizi:</span> {Array.isArray(flight.amenities) ? flight.amenities.join(', ') : flight.amenities}</div>

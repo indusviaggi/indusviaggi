@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import apiFetch from '@/utils/apiFetch';
 import { validateEmail, validatePhone } from '@/utils/validation';
 import { formatDateLocal } from '@/utils/formatDateLocal';
+import Loader from './Loader';
 
 const BookingDialog = ({ open, onClose, flight }: {
   open: boolean;
@@ -50,6 +51,10 @@ const BookingDialog = ({ open, onClose, flight }: {
     try {
       const bookingPayload = {
         flight: flight,
+        adults: flight.adults,
+        children: flight.children,
+        infants: flight.infants,
+        passengerPrices: flight.passengerPrices,
         booking: { status: 'pending' },
         passenger: {
           name: form.firstName,
@@ -192,8 +197,8 @@ const BookingDialog = ({ open, onClose, flight }: {
               </div>
             </div>
             {error && <div className="text-red-600 text-xs mb-2">{error}</div>}
-            <Button type="submit" disabled={loading} className="w-full bg-gold-500 hover:bg-gold-600 text-white text-xs sm:text-base">
-              {loading ? 'Prenotazione in corso...' : 'Conferma Prenotazione'}
+            <Button type="submit" disabled={loading} className="w-full bg-gold-500 hover:bg-gold-600 text-white text-xs sm:text-base flex items-center justify-center">
+              {loading ? (<><span className="mr-2"><Loader /></span>Prenotazione in corso...</>) : 'Conferma Prenotazione'}
             </Button>
           </form>
           )}

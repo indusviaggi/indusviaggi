@@ -1,10 +1,8 @@
 todo:
-dash
-pagination
-show fake data
-filters
-select row
-form data to send city
+dash:
+    manange states
+    filters
+nav bar    
 ```bash
 npm i
 npm run dev
