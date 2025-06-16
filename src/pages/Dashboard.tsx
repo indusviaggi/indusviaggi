@@ -2,10 +2,15 @@ import { useState, useEffect } from 'react';
 import apiFetch from '@/utils/apiFetch';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Plane, Calendar, MapPin, Clock, User, CreditCard } from 'lucide-react';
+import { Plane, MapPin, Clock, User, CreditCard } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import DashboardLoader from '@/components/DashboardLoader';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CalendarIcon } from 'lucide-react';
 import FlightDetailsDialog from '@/components/FlightDetailsDialog';
 import { formatDateLocal } from '@/utils/formatDateLocal';
 
@@ -20,25 +25,55 @@ const Dashboard = () => {
   const [errorBookings, setErrorBookings] = useState<string | null>(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedFlight, setSelectedFlight] = useState<any>(null);
+  // Default dates: first and last day of current month
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const firstDayStr = formatDateLocal(firstDay);
+  const lastDayStr = formatDateLocal(lastDay);
+  // Filters
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [dateFrom, setDateFrom] = useState(firstDayStr);
+  const [dateTo, setDateTo] = useState(lastDayStr);
+  // New: Date Type Filter
+  const [dateType, setDateType] = useState<'createdAt' | 'departure' | 'arrival'>('createdAt');
+  // For staged filter values
+  const [pendingStatus, setPendingStatus] = useState('all');
+  const [pendingDateFrom, setPendingDateFrom] = useState(firstDayStr);
+  const [pendingDateTo, setPendingDateTo] = useState(lastDayStr);
+  const [pendingDateType, setPendingDateType] = useState<'createdAt' | 'departure' | 'arrival'>('createdAt');
 
-  useEffect(() => {
-    async function fetchBookings() {
-      setLoadingBookings(true);
-      setErrorBookings(null);
-      try {
-        const res = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/bookings/my`);
-        const data = await res.json();
-        if (data.success && Array.isArray(data.data)) {
-          setBookings(data.data);
-        } else {
-          setErrorBookings('Errore nel recupero delle prenotazioni');
-        }
-      } catch (err) {
-        setErrorBookings('Errore di rete');
+  // Fetch bookings with filters
+  async function fetchBookings({
+    status = 'all',
+    dateFrom = firstDayStr,
+    dateTo = lastDayStr,
+    dateType = 'createdAt'
+  } = {}) {
+    setLoadingBookings(true);
+    setErrorBookings(null);
+    try {
+      const params = new URLSearchParams();
+      params.append('status', status);
+      params.append('dateFrom', dateFrom);
+      params.append('dateTo', dateTo);
+      params.append('dateType', dateType); // <-- Send dateType to API
+      const res = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/bookings/my?${params.toString()}`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setBookings(data.data);
+      } else {
+        setErrorBookings('Errore nel recupero delle prenotazioni');
       }
-      setLoadingBookings(false);
+    } catch (err) {
+      setErrorBookings('Errore di rete');
     }
-    fetchBookings();
+    setLoadingBookings(false);
+  }
+
+  // Initial fetch on mount with default filters
+  useEffect(() => {
+    fetchBookings({ status: 'all', dateFrom: firstDayStr, dateTo: lastDayStr, dateType: 'createdAt' });
   }, []);
 
   const getStatusColor = (status: string) => {
@@ -59,6 +94,15 @@ const Dashboard = () => {
       
       <div className="pt-32 pb-12">
         <div className="max-w-6xl mx-auto px-6">
+          <div className="w-full flex justify-end mb-6">
+            <Button 
+              onClick={() => navigate('/search')}
+              className="bg-gold-500 hover:bg-gold-600 text-white text-lg font-bold shadow-lg px-8 py-3 rounded-full border-2 border-gold-600 transition-all duration-200 w-full sm:w-auto"
+              style={{letterSpacing: 1}}
+            >
+              Prenota nuovo volo
+            </Button>
+          </div>
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-navy-900 mb-2">
               Bentornato, {user?.name}!
@@ -74,9 +118,9 @@ const Dashboard = () => {
                 <div className="p-3 bg-gold-100 rounded-lg">
                   <Plane className="h-6 w-6 text-gold-600" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-500">Prenotazioni totali</p>
-                  <p className="text-2xl font-bold text-navy-900">{bookings.length}</p>
+                <div className="ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-500 break-words whitespace-normal">Prenotazioni totali</p>
+                  <p className="text-xl sm:text-2xl font-bold text-navy-900 break-words whitespace-normal">{bookings.length}</p>
                 </div>
               </div>
             </div>
@@ -84,11 +128,11 @@ const Dashboard = () => {
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="flex items-center">
                 <div className="p-3 bg-sky-100 rounded-lg">
-                  <Calendar className="h-6 w-6 text-sky-600" />
+                  <CalendarIcon className="h-6 w-6 text-sky-600" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-500">Viaggi in arrivo</p>
-                  <p className="text-2xl font-bold text-navy-900">
+                <div className="ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-500 break-words whitespace-normal">Viaggi in arrivo</p>
+                  <p className="text-xl sm:text-2xl font-bold text-navy-900 break-words whitespace-normal">
                     {bookings.filter(b => {
                       const depSeg = b.flight?.departureItinerary?.segments?.[0];
                       return depSeg && new Date(depSeg.departureTime) > new Date();
@@ -104,9 +148,9 @@ const Dashboard = () => {
                 <div className="p-3 bg-green-100 rounded-lg">
                   <CreditCard className="h-6 w-6 text-green-600" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-500">Totale Speso</p>
-                  <p className="text-2xl font-bold text-navy-900">
+                <div className="ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-500 break-words whitespace-normal">Totale Speso</p>
+                  <p className="text-xl sm:text-2xl font-bold text-navy-900 break-words whitespace-normal">
                     €{bookings.reduce((sum, b) => {
                       const flight = b.flight || b.booking?.flight;
                       const price = Number(flight?.price) || 0;
@@ -122,9 +166,9 @@ const Dashboard = () => {
                 <div className="p-3 bg-purple-100 rounded-lg">
                   <Plane className="h-6 w-6 text-purple-600" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-500">Compagnie Aeree Utilizzate</p>
-                  <p className="text-2xl font-bold text-navy-900">
+                <div className="ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-500 break-words whitespace-normal">Compagnie Aeree Utilizzate</p>
+                  <p className="text-xl sm:text-2xl font-bold text-navy-900 break-words whitespace-normal">
                     {Array.from(new Set(bookings.map(b => {
                       const flight = b.flight || b.booking?.flight;
                       return flight?.airlineName || flight?.departureItinerary?.segments?.[0]?.airlineName || flight?.departureItinerary?.segments?.[0]?.airLine;
@@ -161,22 +205,112 @@ const Dashboard = () => {
             <div className="p-6">
               {activeTab === 'bookings' && (
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <h3 className="text-lg font-semibold text-navy-900">Le tue prenotazioni</h3>
-                    <Button 
-                      onClick={() => navigate('/search')}
-                      className="bg-gold-500 hover:bg-gold-600 text-white"
-                    >
-                      Prenota nuovo volo
-                    </Button>
+                    <div className="flex flex-wrap gap-2 items-center">
+                      <div className="flex flex-row flex-wrap gap-2 items-center bg-gray-50 p-2 rounded">
+                        {/* Status Filter */}
+                        <Select value={pendingStatus} onValueChange={setPendingStatus}>
+                          <SelectTrigger className="p-2 border border-gray-200 rounded w-32 text-xs focus:outline-none focus:ring-2 focus:ring-gold-500">
+                            <SelectValue placeholder="Stato" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">Tutti gli stati</SelectItem>
+                            <SelectItem value="paid">paid</SelectItem>
+                            <SelectItem value="booked">booked</SelectItem>
+                            <SelectItem value="pending">pending</SelectItem>
+                            <SelectItem value="cancelled">cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {/* Date Type Filter */}
+                        <Select value={pendingDateType} onValueChange={setPendingDateType}>
+                          <SelectTrigger className="p-2 border border-gray-200 rounded w-36 text-xs focus:outline-none focus:ring-2 focus:ring-gold-500">
+                            <SelectValue placeholder="Tipo data" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="createdAt">Data creazione</SelectItem>
+                            <SelectItem value="departure">Data partenza</SelectItem>
+                            <SelectItem value="arrival">Data arrivo</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {/* Date From Filter */}
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={`p-2 border border-gray-200 rounded flex items-center w-32 text-xs ${!pendingDateFrom ? 'text-muted-foreground' : ''}`}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {pendingDateFrom ? pendingDateFrom : <span>Da</span>}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={pendingDateFrom ? new Date(pendingDateFrom) : undefined}
+                              onSelect={date => setPendingDateFrom(date ? formatDateLocal(new Date(date)) : '')}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <span className="text-xs">-</span>
+                        {/* Date To Filter */}
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={`p-2 border border-gray-200 rounded flex items-center w-32 text-xs ${!pendingDateTo ? 'text-muted-foreground' : ''}`}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {pendingDateTo ? pendingDateTo : <span>A</span>}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={pendingDateTo ? new Date(pendingDateTo) : undefined}
+                              onSelect={date => setPendingDateTo(date ? formatDateLocal(date) : '')}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <Button
+                          className="bg-gold-500 hover:bg-gold-600 text-white px-4 py-1 text-xs"
+                          onClick={async () => {
+                            setStatusFilter(pendingStatus);
+                            setDateFrom(pendingDateFrom);
+                            setDateTo(pendingDateTo);
+                            setDateType(pendingDateType);
+                            await fetchBookings({
+                              status: pendingStatus,
+                              dateFrom: pendingDateFrom,
+                              dateTo: pendingDateTo,
+                              dateType: pendingDateType
+                            });
+                          }}
+                        >
+                          Cerca
+                        </Button>
+                      </div>
+                      {/* Prenota nuovo volo button moved to top */}
+                    </div>
                   </div>
-                  
                   {loadingBookings ? (
-                    <div className="text-center text-navy-700 py-8">Caricamento prenotazioni...</div>
+                    <div className="py-12">
+                      <DashboardLoader />
+                    </div>
                   ) : errorBookings ? (
                     <div className="text-center text-red-700 py-8">{errorBookings}</div>
                   ) : bookings.length === 0 ? (
-                    <div className="text-center text-navy-700 py-8">Nessuna prenotazione trovata.</div>
+                    <div className="flex justify-center">
+                      <div className="bg-white/90 border border-sky-100 rounded-xl shadow-lg p-8 flex flex-col items-center max-w-md w-full">
+                        <img src="/airplane.gif" alt="Ricerca" />
+                        <div className="text-navy-700 text-lg font-semibold mb-2">Nessuna prenotazione trovata</div>
+                        <div className="text-gray-500">Usa i filtri sopra e premi Cerca per visualizzare le tue prenotazioni.</div>
+                      </div>
+                    </div>
                   ) : (
                     bookings.map((b, idx) => {
                       const booking = b.booking;
@@ -217,7 +351,7 @@ const Dashboard = () => {
                                   <span className="font-semibold">Adulti:</span> {flight?.adults || 0} <span className="font-semibold ml-2">Bambini:</span> {flight?.children || 0} <span className="font-semibold ml-2">Neonati:</span> {flight?.infants || 0}
                                 </div>
                               )}
-                                                          </div>
+                            </div>
                             <div className="mt-4 md:mt-0 text-right">
                               <div className="text-xl font-bold text-navy-900">€{flight?.price}</div>
                               <Button
@@ -269,18 +403,6 @@ const Dashboard = () => {
                 </div>
               )}
 
-              {activeTab === 'payment' && (
-                <div>
-                  <h3 className="text-lg font-semibold text-navy-900 mb-4">Metodi di pagamento</h3>
-                  <div className="bg-gray-50 p-6 rounded-lg text-center">
-                    <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 mb-4">Nessun metodo di pagamento aggiunto</p>
-                    <Button className="bg-gold-500 hover:bg-gold-600 text-white">
-                      Aggiungi metodo di pagamento
-                    </Button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
