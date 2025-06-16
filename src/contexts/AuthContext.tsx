@@ -5,7 +5,7 @@ interface User {
   id: string;
   email: string;
   name: string;
-  avatar?: string;
+  role?: string;
 }
 
 interface AuthContextType {
@@ -17,12 +17,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Mock users data - replace with actual API calls
-const mockUsers = [
-  { id: '1', email: 'demo@indusviaggi.com', password: 'demo123', name: 'Demo User' },
-  { id: '2', email: 'john@example.com', password: 'password', name: 'John Doe' }
-];
 
 // Mock JWT token generation - replace with actual backend calls
 const generateMockToken = (userId: string) => {
@@ -43,16 +37,6 @@ const isTokenValid = (token: string): boolean => {
     return payload.exp > Math.floor(Date.now() / 1000);
   } catch {
     return false;
-  }
-};
-
-// Get user ID from token
-const getUserIdFromToken = (token: string): string | null => {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.userId;
-  } catch {
-    return null;
   }
 };
 

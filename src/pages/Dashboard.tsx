@@ -78,14 +78,39 @@ const Dashboard = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'booked':
-      case 'confermato': return 'text-green-600 bg-green-100';
-      case 'pending':
-      case 'in attesa': return 'text-yellow-600 bg-yellow-100';
-      case 'cancelled':
-      case 'cancellato': return 'text-red-600 bg-red-100';
+      case 'paid': return 'text-green-600 bg-green-100';
+      case 'booked': return 'text-blue-600 bg-blue-100';
+      case 'pending': return 'text-yellow-600 bg-yellow-100';
+      case 'cancelled': return 'text-red-600 bg-red-100';
       default: return 'text-gray-600 bg-gray-100';
     }
+  };
+
+  // Loader and disable state for status change
+  const [statusChangePending, setStatusChangePending] = useState(false);
+  const [statusChangeId, setStatusChangeId] = useState(null);
+
+  // Handler for status change
+  const handleStatusChange = async (bookingId, newStatus) => {
+    setStatusChangePending(true);
+    setStatusChangeId(bookingId);
+    try {
+      const res = await apiFetch(`${import.meta.env.VITE_API_BASE_URL}/bookings/${bookingId}/status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) throw new Error('Failed to update status');
+      setBookings(prev => prev.map(b =>
+        b.booking._id === bookingId
+          ? { ...b, booking: { ...b.booking, status: newStatus } }
+          : b
+      ));
+    } catch (err) {
+      alert('Errore durante l\'aggiornamento dello stato');
+    }
+    setStatusChangePending(false);
+    setStatusChangeId(null);
   };
 
   return (
@@ -328,6 +353,29 @@ const Dashboard = () => {
                                 <span className={`ml-4 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
                                   {booking.status}
                                 </span>
+                                {user?.role === 'admin' && (
+                                  <>
+                                    <select
+                                      className="ml-4 border rounded px-2 py-1 text-xs"
+                                      value={booking.status}
+                                      disabled={statusChangePending}
+                                      onChange={e => handleStatusChange(booking._id, e.target.value)}
+                                    >
+                                      <option value="booked">Booked</option>
+                                      <option value="pending">Pending</option>
+                                      <option value="cancelled">Cancelled</option>
+                                      <option value="paid">Paid</option>
+                                    </select>
+                                    {statusChangePending && statusChangeId === booking._id && (
+                                      <span className="ml-2 inline-block align-middle">
+                                        <svg className="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                        </svg>
+                                      </span>
+                                    )}
+                                  </>
+                                )}
                               </div>
                               <div className="text-gray-600 mb-1">
                                 {depSeg?.from} → {depSeg?.to} {retSeg ? ` / ${retSeg.from} → ${retSeg.to}` : ''}
