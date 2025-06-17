@@ -214,7 +214,7 @@ const Dashboard = () => {
               <nav className="flex space-x-8 px-6">
                 {[
                   { id: 'bookings', label: 'Le mie prenotazioni', icon: Plane },
-                  { id: 'profile', label: 'Profilo', icon: User },
+                  //{ id: 'profile', label: 'Profilo', icon: User },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -356,7 +356,7 @@ const Dashboard = () => {
                                 <div className="flex flex-col md:flex-row md:items-center justify-between">
                                   <div className="flex-1">
                                     <div className="flex items-center mb-2">
-                                      <span className="font-semibold text-navy-900">{flight?.flightNumber || depSeg?.flightNumber}</span>
+                                      <span className="font-semibold text-navy-900">{depSeg?.airLine}{flight?.flightNumber || depSeg?.flightNumber}</span>
                                       <span className="text-gray-500 ml-2">{flight?.airlineName || depSeg?.airlineName || depSeg?.airLine}</span>
                                       <span className={`ml-4 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
                                         {booking.status}

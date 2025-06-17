@@ -182,7 +182,13 @@ const FlightDetailsDialog = ({ open, onClose, flight, onBook, showBookButton = t
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                       <div>
                         <div className="font-semibold text-navy-900 text-xs sm:text-base">{seg.airlineName || seg.airLine} {seg.flightNumber}</div>
-                        <div className="text-xs sm:text-sm text-gray-700">{seg.from} → {seg.to}</div>
+                        <div className="text-xs sm:text-sm text-gray-700">
+                          {seg.from}
+                          {seg.fromCity || seg.cityFrom ? ` (${seg.fromCity || seg.cityFrom})` : ''}
+                          {' → '}
+                          {seg.to}
+                          {seg.toCity || seg.cityTo ? ` (${seg.toCity || seg.cityTo})` : ''}
+                        </div>
                       </div>
                       <div className="text-xs sm:text-sm text-gray-600 mt-2 md:mt-0 break-words">
                         Partenza: {formatDateLocal(new Date(seg.departureTime), 'IT')} {new Date(seg.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br />

@@ -157,7 +157,7 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
                         <div className="flex-1">
                           <div className="flex items-center mb-4">
                             <span className="font-semibold text-navy-900">{depFirst?.airlineName || depFirst?.airLine}</span>
-                            <span className="text-gray-500 ml-2">{depFirst?.flightNumber}</span>
+                            <span className="text-gray-500 ml-2">{depFirst?.airLine}{depFirst?.flightNumber}</span>
                           </div>
                           <div className="flex items-center space-x-8">
                             <div className="text-center">
