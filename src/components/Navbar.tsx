@@ -75,7 +75,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
         {/* Logo */}
         <Link to="/" className="flex items-center min-w-0 flex-shrink-0">
-          <img src="/public/l1.png" alt="Logo" className="h-10 w-auto" />
+          <img src="/l1.png" alt="Logo" className="h-10 w-auto" />
         </Link>
         {/* Desktop Nav */}
         <nav className="hidden lg:flex flex-1 items-center justify-center">
@@ -92,7 +92,7 @@ const Navbar = () => {
             ))}
             <li>
               <a aria-label="Chat on WhatsApp" href="https://wa.me/393889220982" target="_blank" rel="noopener noreferrer">
-                <img width="120" className="inline-block align-middle" alt="Chat on WhatsApp" src="/public/WhatsAppButtonGreenMedium.png" />
+                <img width="120" className="inline-block align-middle" alt="Chat on WhatsApp" src="/WhatsAppButtonGreenMedium.png" />
               </a>
             </li>
           </ul>
@@ -163,9 +163,6 @@ const Navbar = () => {
                   >
                     {isLoading ? 'Accesso in corso...' : 'Accedi'}
                   </Button>
-                  <div className="text-center text-sm mt-4 text-gray-600">
-                    Demo: demo@indusviaggi.com / demo123
-                  </div>
                 </form>
               </DialogContent>
             </Dialog>
@@ -195,7 +192,7 @@ const Navbar = () => {
             ))}
             <li>
               <a aria-label="Chat on WhatsApp" href="https://wa.me/393889220982" target="_blank" rel="noopener noreferrer">
-                <img width="120" className="inline-block align-middle" alt="Chat on WhatsApp" src="/public/WhatsAppButtonGreenMedium.png" />
+                <img width="120" className="inline-block align-middle" alt="Chat on WhatsApp" src="/WhatsAppButtonGreenMedium.png" />
               </a>
             </li>
             {user ? (
@@ -265,9 +262,6 @@ const Navbar = () => {
                       >
                         {isLoading ? 'Accesso in corso...' : 'Accedi'}
                       </Button>
-                      <div className="text-center text-sm mt-4 text-gray-600">
-                        Demo: demo@indusviaggi.com / demo123
-                      </div>
                     </form>
                   </DialogContent>
                 </Dialog>

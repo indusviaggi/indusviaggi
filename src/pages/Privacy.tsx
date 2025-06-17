@@ -28,7 +28,6 @@ const Privacy = () => {
               </p>
               <ul className="list-disc pl-6 text-gray-700 mb-4">
                 <li>Nome, indirizzo email e informazioni di contatto</li>
-                <li>Informazioni di pagamento e fatturazione</li>
                 <li>Dettagli del viaggio e preferenze</li>
                 <li>Comunicazioni con il nostro team di supporto</li>
               </ul>
@@ -51,7 +50,7 @@ const Privacy = () => {
             <div className="bg-white rounded-lg shadow-md p-8 mb-8">
               <h2 className="text-2xl font-bold text-navy-900 mb-4">3. Condivisione delle Informazioni</h2>
               <p className="text-gray-700 mb-4">
-                Non vendiamo, scambiamo o trasfeريamo le tue informazioni personali a terzi, 
+                Non vendiamo, scambiamo o trasferiamo le tue informazioni personali a terzi, 
                 eccetto nei seguenti casi:
               </p>
               <ul className="list-disc pl-6 text-gray-700 mb-4">
@@ -83,6 +82,46 @@ const Privacy = () => {
                 <li>Opporti al trattamento dei tuoi dati</li>
                 <li>Richiedere la portabilità dei dati</li>
               </ul>
+            </div>
+
+            {/* MISSING GDPR SECTIONS */}
+            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+              <h2 className="text-2xl font-bold text-navy-900 mb-4">Base Giuridica del Trattamento</h2>
+              <p className="text-gray-700 mb-4">
+                Trattiamo i tuoi dati personali sulla base del tuo consenso, della necessità di eseguire un contratto o per adempiere a obblighi di legge.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+              <h2 className="text-2xl font-bold text-navy-900 mb-4">Durata della Conservazione dei Dati</h2>
+              <p className="text-gray-700 mb-4">
+                Conserviamo i tuoi dati solo per il tempo necessario agli scopi descritti in questa policy o come richiesto dalla legge.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+              <h2 className="text-2xl font-bold text-navy-900 mb-4">Consenso e Newsletter</h2>
+              <p className="text-gray-700 mb-4">
+                Inviamo newsletter e offerte promozionali solo se hai fornito il tuo consenso esplicito. Puoi revocare il consenso in qualsiasi momento.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+              <h2 className="text-2xl font-bold text-navy-900 mb-4">I Tuoi Diritti GDPR</h2>
+              <ul className="list-disc pl-6 text-gray-700 mb-4">
+                <li>Accedere ai tuoi dati</li>
+                <li>Correggere o aggiornare i tuoi dati</li>
+                <li>Richiedere la cancellazione dei tuoi dati</li>
+                <li>Limitare o opporti al trattamento</li>
+                <li>Richiedere la portabilità dei dati</li>
+                <li>Revocare il consenso in qualsiasi momento</li>
+              </ul>
+              <p className="text-gray-700 mb-4">
+                Per esercitare questi diritti, contattaci a <a href="mailto:indusviaggi@gmail.com" className="text-gold-500 underline">indusviaggi@gmail.com</a>.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+              <h2 className="text-2xl font-bold text-navy-900 mb-4">Cookie</h2>
+              <p className="text-gray-700 mb-4">
+                Utilizziamo cookie essenziali e, previo consenso, cookie analitici. Puoi gestire le preferenze dei cookie in qualsiasi momento.
+              </p>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-8 mb-8">

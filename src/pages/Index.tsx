@@ -20,7 +20,7 @@ const Index = () => {
       location: "Asia",
       price: 450,
       rating: 4.8,
-      image: '/public/delhi.jpg'
+      image: '/delhi.jpg'
     },
     {
       id: 2,
@@ -28,7 +28,7 @@ const Index = () => {
       location: "Africa",
       price: 150,
       rating: 4.9,
-      image: '/public/rabat.jpeg'
+      image: '/rabat.jpeg'
     },
     {
       id: 3,
@@ -36,15 +36,15 @@ const Index = () => {
       location: "Asia",
       price: 500,
       rating: 4.7,
-      image: '/public/amritsar.jpeg'
+      image: '/amritsar.jpeg'
     },
     {
       id: 4,
       name: "New York, USA",
-      location: "/public/newyork.jpeg",
+      location: "America",
       price: 400,
       rating: 4.9,
-      image: '/public/newyork.jpg'    
+      image: '/newyork.jpg'    
     },
     {
       id: 5,
@@ -52,7 +52,7 @@ const Index = () => {
       location: "Europa",
       price: 50,
       rating: 4.8,
-      image: '/public/london.jpg'
+      image: '/london.jpg'
     },
   ];
 
@@ -134,7 +134,7 @@ const Index = () => {
       
       {/* Call to Action */}
       <section className="py-24 bg-navy-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('/public/plane.jpg')] bg-cover bg-center" />
+        <div className="absolute inset-0 opacity-20 bg-[url('/plane.jpg')] bg-cover bg-center" />
         
         <div className="section-container relative z-10 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 max-w-3xl mx-auto">

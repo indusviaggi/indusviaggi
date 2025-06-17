@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import FAQ from "./pages/FAQ";
 import Privacy from "./pages/Privacy";
+import CookieBanner from "./components/CookieBanner";
 import Terms from "./pages/Terms";
 import Refunds from "./pages/Refunds";
 import Cancellations from "./pages/Cancellations";
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        <CookieBanner />
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>

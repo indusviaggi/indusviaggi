@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils';
 
 const BackgroundSlider = () => {
   const backgrounds = [
-    '/public/travel1.jpg',
-    '/public/travel2.jpg',
-    '/public/travel3.jpg',
+    '/travel1.jpg',
+    '/travel2.jpg',
+    '/travel3.jpg',
   ];
   
   const [currentBg, setCurrentBg] = useState(0);

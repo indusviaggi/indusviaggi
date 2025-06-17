@@ -260,7 +260,7 @@ const SearchResults = () => {
           {(!loading && !result) && (
             <div className="flex justify-center">
               <div className="bg-white/90 border border-sky-100 rounded-xl shadow-lg p-8 flex flex-col items-center max-w-md w-full">
-                <img src="/public/airplane.gif" alt="Airplane" />
+                <img src="/airplane.gif" alt="Airplane" />
                 <h2 className="text-xl font-bold text-navy-900 mb-2 flex items-center gap-2">
                   <span>✈️</span> Pronto a partire?
                 </h2>
