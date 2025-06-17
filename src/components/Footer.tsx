@@ -133,9 +133,9 @@ const Footer = () => {
               className="inline-block align-middle ml-1"
               style={{ height: 60 }}
             />
-            <span>&copy; 2024 Indus Viaggi. Tutti i diritti riservati.</span>
+            <span>&copy; {new Date().getFullYear()} <Link to='#' className='text-gold-600'>Indus Viaggi.</Link> Tutti i diritti riservati.</span>
           </div>
-          <div className="text-gray-400">Powered by IndusViaggi</div>
+          <div className="text-grey-400">Powered by: <Link to="https://www.akwares.io" target='blank' className="text-gold-600">Akwares</Link></div>
         </div>
       </div>
       {/* Newsletter Success Dialog */}
