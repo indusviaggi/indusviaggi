@@ -145,7 +145,7 @@ export default {
 				'pulse-subtle': 'pulse-subtle 3s ease-in-out infinite',
 			},
 			backgroundImage: {
-				'hero-pattern': "url('https://images.unsplash.com/photo-1500835556837-99ac94a94552?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2787&q=80')",
+				'hero-pattern': "url('/public/plane2.jpg')",
 				'subtle-gradient': 'linear-gradient(to bottom right, rgba(142, 202, 230, 0.1), rgba(10, 35, 66, 0.05))',
 			},
 		}

@@ -17,21 +17,21 @@ const testimonials: Testimonial[] = [
     quote: "Indus Viaggi made our honeymoon absolutely magical. The attention to detail and personalized service exceeded all our expectations.",
     author: "Emily & James",
     role: "Honeymooners",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80"
+    avatar: ''
   },
   {
     id: 2,
     quote: "The flight booking process was seamless and the customer service team went above and beyond to accommodate our last-minute changes.",
     author: "Michael Chen",
     role: "Business Traveler",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80"
+    avatar: ''
   },
   {
     id: 3,
     quote: "As a family of five, travel planning can be stressful, but Indus Viaggi made it effortless. Their family packages are thoughtfully crafted.",
     author: "Sarah Johnson",
     role: "Family Traveler",
-    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80"
+    avatar: ''
   }
 ];
 

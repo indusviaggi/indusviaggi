@@ -16,43 +16,43 @@ const Index = () => {
   const destinations = [
     {
       id: 1,
-      name: "Bali, Indonesia",
-      location: "Sud-est Asiatico",
-      price: 899,
+      name: "Delhi, India",
+      location: "Asia",
+      price: 450,
       rating: 4.8,
-      image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80",
+      image: '/public/delhi.jpg'
     },
     {
       id: 2,
-      name: "Santorini, Grecia",
-      location: "Europa",
-      price: 1299,
+      name: "Rabat, Marocco",
+      location: "Africa",
+      price: 150,
       rating: 4.9,
-      image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80",
+      image: '/public/rabat.jpeg'
     },
     {
       id: 3,
-      name: "Kyoto, Giappone",
-      location: "Asia Orientale",
-      price: 1099,
+      name: "Amritsar, India",
+      location: "Asia",
+      price: 500,
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80",
+      image: '/public/amritsar.jpeg'
     },
     {
       id: 4,
-      name: "Machu Picchu, Perù",
-      location: "Sud America",
-      price: 1599,
+      name: "New York, USA",
+      location: "/public/newyork.jpeg",
+      price: 400,
       rating: 4.9,
-      image: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80",
+      image: '/public/newyork.jpg'    
     },
     {
       id: 5,
-      name: "Costa Amalfitana, Italia",
+      name: "Londra, UK",
       location: "Europa",
-      price: 1199,
+      price: 50,
       rating: 4.8,
-      image: "https://images.unsplash.com/photo-1612698093158-e07ac200d44e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1528&q=80",
+      image: '/public/london.jpg'
     },
   ];
 
@@ -134,7 +134,7 @@ const Index = () => {
       
       {/* Call to Action */}
       <section className="py-24 bg-navy-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2800&q=80')] bg-cover bg-center" />
+        <div className="absolute inset-0 opacity-20 bg-[url('/public/plane.jpg')] bg-cover bg-center" />
         
         <div className="section-container relative z-10 text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 max-w-3xl mx-auto">
