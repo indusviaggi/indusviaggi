@@ -2,12 +2,7 @@ import { useState } from 'react';
 import { Facebook, Instagram, Linkedin, Twitter, Youtube, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -15,20 +10,12 @@ const Footer = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
     if (!validateEmail(email)) {
-      toast({
-        title: "Email non valida",
-        description: "Inserisci un indirizzo email valido.",
-        variant: "destructive",
-        duration: 5000,
-      });
+      toast({ title: 'Email non valida', description: 'Inserisci un indirizzo email valido.', variant: 'destructive', duration: 5000 });
       return;
     }
     setLoading(true);
@@ -36,85 +23,72 @@ const Footer = () => {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/mail/send-mail`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: email,
-          type: 'newsletter'
-        }),
+        body: JSON.stringify({ to: email, type: 'newsletter' }),
       });
       if (!response.ok) {
-        toast({
-          title: "Errore",
-          description: "Impossibile iscriversi alla newsletter. Riprova più tardi.",
-          variant: "destructive",
-          duration: 5000,
-        });
+        toast({ title: 'Errore', description: 'Impossibile iscriversi alla newsletter. Riprova più tardi.', variant: 'destructive', duration: 5000 });
         setLoading(false);
         return;
       }
       setShowNewsletterDialog(true);
       setEmail('');
     } catch (error) {
-      toast({
-        title: "Errore",
-        description: "Si è verificato un errore di rete.",
-        variant: "destructive",
-        duration: 5000,
-      });
+      toast({ title: 'Errore', description: 'Si è verificato un errore di rete.', variant: 'destructive', duration: 5000 });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSocialClick = (platform: string) => {
+  const handleSocialClick = (platform) => {
     const urls = {
       facebook: 'https://facebook.com/Indusviaggi',
       instagram: 'https://instagram.com',
       twitter: 'https://twitter.com',
       linkedin: 'https://linkedin.com',
-      youtube: 'https://youtube.com'
+      youtube: 'https://youtube.com',
     };
-    
-    window.open(urls[platform as keyof typeof urls], '_blank', 'noopener,noreferrer');
+    window.open(urls[platform], '_blank', 'noopener,noreferrer');
   };
 
   return (
-    <footer className="bg-navy-900 text-white py-1">
-      <div className="section-container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+    <footer className="bg-navy-900 text-white pt-8 pb-4 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Indus Viaggi</h3>
-            <p className="text-gray-300 mb-4">
+            <h3 className="text-xl font-bold mb-3">Indus Viaggi</h3>
+            <p className="text-gray-300 mb-4 text-sm">
               La tua agenzia di viaggi di fiducia per esplorare il mondo con comfort e stile.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex flex-wrap gap-3">
               {[
                 { icon: Facebook, name: 'facebook' },
                 { icon: Instagram, name: 'instagram' },
                 { icon: Twitter, name: 'twitter' },
                 { icon: Linkedin, name: 'linkedin' },
-                { icon: Youtube, name: 'youtube' }
+                { icon: Youtube, name: 'youtube' },
               ].map(({ icon: Icon, name }) => (
                 <button
                   key={name}
                   onClick={() => handleSocialClick(name)}
                   className="text-gray-300 hover:text-gold-500 transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
+                  aria-label={name}
                 >
                   <Icon className="h-5 w-5" />
                 </button>
               ))}
             </div>
           </div>
-          
-          {/* Quick Links */}
+          {/* Legal */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Link Rapidi</h4>
-            <ul className="space-y-2">
+            <h4 className="text-lg font-semibold mb-3">Informazioni Legali</h4>
+            <ul className="space-y-2 text-sm">
               {[
-                { name: 'Home', path: '/' },
-                { name: 'Destinazioni', path: '/#destinations' },
-                { name: 'Voli', path: '/#flights' },
-                { name: 'Contatti', path: '/#contact' }
+                { name: 'Privacy Policy', path: '/privacy' },
+                { name: 'Termini e Condizioni', path: '/terms' },
+                { name: 'Rimborsi', path: '/refunds' },
+                { name: 'Cancellazioni', path: '/cancellations' },
+                { name: 'FAQ', path: '/faq' },
               ].map((link) => (
                 <li key={link.name}>
                   <a href={link.path} className="text-gray-300 hover:text-gold-500 transition-colors duration-300">
@@ -124,71 +98,46 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          
-          {/* Legal */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Informazioni Legali</h4>
-            <ul className="space-y-2">
-              {[
-                { name: 'Privacy Policy', path: '/privacy' },
-                { name: 'Termini e Condizioni', path: '/terms' },
-                { name: 'Rimborsi', path: '/refunds' },
-                { name: 'Cancellazioni', path: '/cancellations' },
-                { name: 'FAQ', path: '/faq' }
-              ].map((link) => (
-                <li key={link.name}>
-                <a
-                  href={link.path}
-                  className="text-gray-300 hover:text-gold-500 transition-colors duration-300"
-                >
-                  {link.name}
-                </a>
-              </li>
-              )
-              )}
-            </ul>
-          </div>
-          
           {/* Newsletter */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Newsletter</h4>
-            <p className="text-gray-300 mb-4">
+            <h4 className="text-lg font-semibold mb-3">Newsletter</h4>
+            <p className="text-gray-300 mb-3 text-sm">
               Iscriviti per ricevere le migliori offerte di viaggio!
             </p>
-            <form onSubmit={handleNewsletterSubmit} className="flex">
+            <form onSubmit={handleNewsletterSubmit} className="flex w-full max-w-xs">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="La tua email"
-                className="flex-1 px-4 py-2 rounded-l-lg text-navy-900 focus:outline-none"
+                className="flex-1 px-3 py-2 rounded-l-lg text-navy-900 focus:outline-none text-sm"
                 required
               />
               <button
                 type="submit"
-                className="bg-gold-500 hover:bg-gold-600 px-4 py-2 rounded-r-lg transition-colors duration-300"
+                className="bg-gold-500 hover:bg-gold-600 px-3 py-2 rounded-r-lg transition-colors duration-300"
                 disabled={loading}
+                aria-label="Iscriviti alla newsletter"
               >
                 <Send className="h-4 w-4" />
               </button>
             </form>
           </div>
         </div>
-        
-        <div className="border-t border-gray-700 pt-8 text-center text-gray-300">
-          <p>
+        <div className="border-t border-gray-700 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center text-gray-300 text-xs md:text-sm">
+          <div className="flex items-center gap-2 justify-center">
             <img
               src="/iata1.png"
               alt="Iata Logo"
               title="Iata Logo"
-              className="inline-block align-middle ml-3 img-fluid2"
-              style={{ height: 100 }}
+              className="inline-block align-middle ml-1"
+              style={{ height: 60 }}
             />
-          </p>
-            &copy; 2024 Indus Viaggi. Tutti i diritti riservati.
+            <span>&copy; 2024 Indus Viaggi. Tutti i diritti riservati.</span>
+          </div>
+          <div className="text-gray-400">Powered by IndusViaggi</div>
         </div>
       </div>
-
       {/* Newsletter Success Dialog */}
       <Dialog open={showNewsletterDialog} onOpenChange={setShowNewsletterDialog}>
         <DialogContent className="sm:max-w-[425px]">
