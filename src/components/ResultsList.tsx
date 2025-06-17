@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import FilterResults from '@/components/FilterResults';
 import FlightDetailsDialog from '@/components/FlightDetailsDialog';
 import BookingDialog from '@/components/BookingDialog';
+import PaginationWrapper from './PaginationWrapper';
 
 interface ResultsListProps {
   results: any[];
@@ -11,8 +12,6 @@ interface ResultsListProps {
 }
 
 const RESULTS_PER_PAGE = 10;
-const PRICE_MIN = 0;
-const PRICE_STEP = 10;
 
 const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinClass, onFilteredCountChange }) => {
   // Compute max price from results
@@ -27,7 +26,7 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
   const [flightDuration, setFlightDuration] = useState('');
   const [layoverDuration, setLayoverDuration] = useState('');
   const [sort, setSort] = useState('');
-  const [page, setPage] = useState(1);
+  // Remove local page state, will use PaginationWrapper
 
   // Update price if maxPrice changes
   React.useEffect(() => {
@@ -101,82 +100,6 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
     }
   }, [filteredResults.length, onFilteredCountChange]);
 
-  const totalPages = Math.ceil(filteredResults.length / RESULTS_PER_PAGE);
-  const paginatedResults = filteredResults.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
-
-  // Pagination logic for 5 buttons: First, Prev, Current, Next, Last (with arrows)
-  const getPageButtons = () => {
-    const buttons = [];
-    if (page > 1) {
-      buttons.push(
-        <button
-          key="first"
-          className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gold-100"
-          onClick={() => setPage(1)}
-          aria-label="First page"
-        >
-          «
-        </button>
-      );
-    }
-    if (page > 2) {
-      buttons.push(
-        <button
-          key="prevPage"
-          className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gold-100"
-          onClick={() => setPage(page - 1)}
-          aria-label="Previous page"
-        >
-          ‹
-        </button>
-      );
-    }
-    buttons.push(
-      <button
-        key="current"
-        className="px-3 py-1 rounded border border-gray-300 bg-gold-500 text-white"
-        disabled
-      >
-        {page}
-      </button>
-    );
-    if (page < totalPages) {
-      buttons.push(
-        <button
-          key="nextPage"
-          className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gold-100"
-          onClick={() => setPage(page + 1)}
-          aria-label="Next page"
-        >
-          ›
-        </button>
-      );
-    }
-    if (page < totalPages) {
-      buttons.push(
-        <button
-          key="last"
-          className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gold-100"
-          onClick={() => setPage(totalPages)}
-          aria-label="Last page"
-        >
-          »
-        </button>
-      );
-    }
-    return buttons;
-  };
-
-  const Pagination = () => (
-    totalPages > 1 ? (
-      <div className="flex justify-end my-6">
-        <div className="w-full max-w-2xl mx-auto flex justify-end space-x-2">
-          {getPageButtons()}
-        </div>
-      </div>
-    ) : null
-  );
-
   // Dialog state for flight details
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedFlight, setSelectedFlight] = useState(null);
@@ -198,119 +121,117 @@ const ResultsList: React.FC<ResultsListProps> = ({ results, cabinClasses, cabinC
         onClose={() => setBookingDialogOpen(false)}
         flight={selectedFlight}
       />
-      <div className="flex justify-end">
-        <Pagination />
-      </div>
-      <div className="flex flex-col lg:flex-row gap-8">
-        <div className="lg:w-1/4">
-          <FilterResults
-            results={results}
-            price={price}
-            setPrice={setPrice}
-            maxPrice={maxPrice}
-            stops={stops}
-            setStops={setStops}
-            flightDuration={flightDuration}
-            setFlightDuration={setFlightDuration}
-            layoverDuration={layoverDuration}
-            setLayoverDuration={setLayoverDuration}
-            sort={sort}
-            setSort={setSort}
-          />
-        </div>
-        <div className="lg:w-3/4">
-          <div className="space-y-4">
-            {paginatedResults.map((flight, idx) => {
-              const depSegs = flight.departureItinerary?.segments || [];
-              const retSegs = flight.returnItinerary?.segments || [];
-              const depFirst = depSegs[0];
-              const depLast = depSegs[depSegs.length-1];
-              const retFirst = retSegs[0];
-              const retLast = retSegs[retSegs.length-1];
-              // Use flight.id if available, otherwise fallback to idx + (page-1)*RESULTS_PER_PAGE
-              const flightId = flight.id || (idx + (page-1)*RESULTS_PER_PAGE);
-              return (
-                <div key={flightId} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center mb-4">
-                        <span className="font-semibold text-navy-900">{depFirst?.airlineName || depFirst?.airLine}</span>
-                        <span className="text-gray-500 ml-2">{depFirst?.flightNumber}</span>
-                      </div>
-                      <div className="flex items-center space-x-8">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-navy-900">{depFirst ? new Date(depFirst.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
-                          <div className="text-sm text-gray-500">{depFirst?.from}</div>
-                          <div className="text-xs text-gray-400">{depFirst?.airLine}</div>
-                        </div>
-                        <div className="flex-1 text-center">
-                          <div className="flex items-center justify-center mb-1">
-                            <div className="h-0.5 bg-gray-300 flex-1"></div>
-                            <span className="mx-2">→</span>
-                            <div className="h-0.5 bg-gray-300 flex-1"></div>
+      <PaginationWrapper totalItems={filteredResults.length} pageSize={RESULTS_PER_PAGE}>
+        {({ page, pageSize, startIdx, endIdx }) => (
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="lg:w-1/4">
+              <FilterResults
+                results={results}
+                price={price}
+                setPrice={setPrice}
+                maxPrice={maxPrice}
+                stops={stops}
+                setStops={setStops}
+                flightDuration={flightDuration}
+                setFlightDuration={setFlightDuration}
+                layoverDuration={layoverDuration}
+                setLayoverDuration={setLayoverDuration}
+                sort={sort}
+                setSort={setSort}
+              />
+            </div>
+            <div className="lg:w-3/4">
+              <div className="space-y-4">
+                {filteredResults.slice(startIdx, endIdx).map((flight, idx) => {
+                  const depSegs = flight.departureItinerary?.segments || [];
+                  const retSegs = flight.returnItinerary?.segments || [];
+                  const depFirst = depSegs[0];
+                  const depLast = depSegs[depSegs.length-1];
+                  const retFirst = retSegs[0];
+                  const retLast = retSegs[retSegs.length-1];
+                  // Use flight.id if available, otherwise fallback to idx + startIdx
+                  const flightId = flight.id || (idx + startIdx);
+                  return (
+                    <div key={flightId} className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center mb-4">
+                            <span className="font-semibold text-navy-900">{depFirst?.airlineName || depFirst?.airLine}</span>
+                            <span className="text-gray-500 ml-2">{depFirst?.flightNumber}</span>
                           </div>
-                          <div className="text-sm text-gray-500 flex items-center justify-center">
-                            {flight.departureItinerary?.totalDuration}
+                          <div className="flex items-center space-x-8">
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-navy-900">{depFirst ? new Date(depFirst.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                              <div className="text-sm text-gray-500">{depFirst?.from}</div>
+                              <div className="text-xs text-gray-400">{depFirst?.airLine}</div>
+                            </div>
+                            <div className="flex-1 text-center">
+                              <div className="flex items-center justify-center mb-1">
+                                <div className="h-0.5 bg-gray-300 flex-1"></div>
+                                <span className="mx-2">→</span>
+                                <div className="h-0.5 bg-gray-300 flex-1"></div>
+                              </div>
+                              <div className="text-sm text-gray-500 flex items-center justify-center">
+                                {flight.departureItinerary?.totalDuration}
+                              </div>
+                              {depSegs.length > 1 && (
+                                <div className="text-xs text-gray-400">{depSegs.length - 1} stop</div>
+                              )}
+                            </div>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold text-navy-900">{depLast ? new Date(depLast.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                              <div className="text-sm text-gray-500">{depLast?.to}</div>
+                              <div className="text-xs text-gray-400">{depLast?.airLine}</div>
+                            </div>
                           </div>
-                          {depSegs.length > 1 && (
-                            <div className="text-xs text-gray-400">{depSegs.length - 1} stop</div>
+                          {/* Return Itinerary */}
+                          {retSegs.length > 0 && (
+                            <div className="flex items-center space-x-8 mt-4">
+                              <div className="text-center">
+                                <div className="text-2xl font-bold text-navy-900">{retFirst ? new Date(retFirst.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                                <div className="text-sm text-gray-500">{retFirst?.from}</div>
+                                <div className="text-xs text-gray-400">{retFirst?.airLine}</div>
+                              </div>
+                              <div className="flex-1 text-center">
+                                <div className="flex items-center justify-center mb-1">
+                                  <div className="h-0.5 bg-gray-300 flex-1"></div>
+                                  <span className="mx-2">→</span>
+                                  <div className="h-0.5 bg-gray-300 flex-1"></div>
+                                </div>
+                                <div className="text-sm text-gray-500 flex items-center justify-center">
+                                  {flight.returnItinerary?.totalDuration}
+                                </div>
+                                {retSegs.length > 1 && (
+                                  <div className="text-xs text-gray-400">{retSegs.length - 1} stop</div>
+                                )}
+                              </div>
+                              <div className="text-center">
+                                <div className="text-2xl font-bold text-navy-900">{retLast ? new Date(retLast.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
+                                <div className="text-sm text-gray-500">{retLast?.to}</div>
+                                <div className="text-xs text-gray-400">{retLast?.airLine}</div>
+                              </div>
+                            </div>
                           )}
                         </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-navy-900">{depLast ? new Date(depLast.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
-                          <div className="text-sm text-gray-500">{depLast?.to}</div>
-                          <div className="text-xs text-gray-400">{depLast?.airLine}</div>
+                        <div className="md:ml-8 mt-4 md:mt-0 text-center">
+                          <div className="text-3xl font-bold text-navy-900 mb-2">€{flight.price}</div>
+                          <button
+                            className="bg-gold-500 hover:bg-gold-600 text-white px-6 py-2 rounded"
+                            onClick={() => {
+                              setSelectedFlight(flight);
+                              setDialogOpen(true);
+                            }}
+                          >Seleziona volo</button>
                         </div>
                       </div>
-                      {/* Return Itinerary */}
-                      {retSegs.length > 0 && (
-                        <div className="flex items-center space-x-8 mt-4">
-                          <div className="text-center">
-                            <div className="text-2xl font-bold text-navy-900">{retFirst ? new Date(retFirst.departureTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
-                            <div className="text-sm text-gray-500">{retFirst?.from}</div>
-                            <div className="text-xs text-gray-400">{retFirst?.airLine}</div>
-                          </div>
-                          <div className="flex-1 text-center">
-                            <div className="flex items-center justify-center mb-1">
-                              <div className="h-0.5 bg-gray-300 flex-1"></div>
-                              <span className="mx-2">→</span>
-                              <div className="h-0.5 bg-gray-300 flex-1"></div>
-                            </div>
-                            <div className="text-sm text-gray-500 flex items-center justify-center">
-                              {flight.returnItinerary?.totalDuration}
-                            </div>
-                            {retSegs.length > 1 && (
-                              <div className="text-xs text-gray-400">{retSegs.length - 1} stop</div>
-                            )}
-                          </div>
-                          <div className="text-center">
-                            <div className="text-2xl font-bold text-navy-900">{retLast ? new Date(retLast.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
-                            <div className="text-sm text-gray-500">{retLast?.to}</div>
-                            <div className="text-xs text-gray-400">{retLast?.airLine}</div>
-                          </div>
-                        </div>
-                      )}
                     </div>
-                    <div className="md:ml-8 mt-4 md:mt-0 text-center">
-                      <div className="text-3xl font-bold text-navy-900 mb-2">€{flight.price}</div>
-                      <button
-                        className="bg-gold-500 hover:bg-gold-600 text-white px-6 py-2 rounded"
-                        onClick={() => {
-                          setSelectedFlight(flight);
-                          setDialogOpen(true);
-                        }}
-                      >Seleziona volo</button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="flex justify-end">
-        <Pagination />
-      </div>
+        )}
+      </PaginationWrapper>
     </div>
   );
 };

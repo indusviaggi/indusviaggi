@@ -6,6 +6,7 @@ import { Plane, MapPin, Clock, User, CreditCard } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import PaginationWrapper from '@/components/PaginationWrapper';
 import DashboardLoader from '@/components/DashboardLoader';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -89,6 +90,10 @@ const Dashboard = () => {
   // Loader and disable state for status change
   const [statusChangePending, setStatusChangePending] = useState(false);
   const [statusChangeId, setStatusChangeId] = useState(null);
+
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
 
   // Handler for status change
   const handleStatusChange = async (bookingId, newStatus) => {
@@ -337,87 +342,93 @@ const Dashboard = () => {
                       </div>
                     </div>
                   ) : (
-                    bookings.map((b, idx) => {
-                      const booking = b.booking;
-                      const flight = b.flight || booking.flight;
-                      const passenger = (b.passengers && b.passengers[0]) || b.passenger;
-                      const depSeg = flight?.departureItinerary?.segments?.[0];
-                      const retSeg = flight?.returnItinerary?.segments?.[0];
-                      return (
-                        <div key={booking._id || idx} className="border border-gray-200 rounded-lg p-4">
-                          <div className="flex flex-col md:flex-row md:items-center justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center mb-2">
-                                <span className="font-semibold text-navy-900">{flight?.flightNumber || depSeg?.flightNumber}</span>
-                                <span className="text-gray-500 ml-2">{flight?.airlineName || depSeg?.airlineName || depSeg?.airLine}</span>
-                                <span className={`ml-4 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
-                                  {booking.status}
-                                </span>
-                                {user?.role === 'admin' && (
-                                  <>
-                                    <select
-                                      className="ml-4 border rounded px-2 py-1 text-xs"
-                                      value={booking.status}
-                                      disabled={statusChangePending}
-                                      onChange={e => handleStatusChange(booking._id, e.target.value)}
-                                    >
-                                      <option value="booked">Booked</option>
-                                      <option value="pending">Pending</option>
-                                      <option value="cancelled">Cancelled</option>
-                                      <option value="paid">Paid</option>
-                                    </select>
-                                    {statusChangePending && statusChangeId === booking._id && (
-                                      <span className="ml-2 inline-block align-middle">
-                                        <svg className="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                                        </svg>
+                    <PaginationWrapper totalItems={bookings.length} pageSize={10}>
+                      {({ startIdx, endIdx }) => (
+                        <>
+                          {bookings.slice(startIdx, endIdx).map((b, idx) => {
+                            const booking = b.booking;
+                            const flight = b.flight || booking.flight;
+                            const passenger = (b.passengers && b.passengers[0]) || b.passenger;
+                            const depSeg = flight?.departureItinerary?.segments?.[0];
+                            const retSeg = flight?.returnItinerary?.segments?.[0];
+                            return (
+                              <div key={booking._id || idx} className="border border-gray-200 rounded-lg p-4">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between">
+                                  <div className="flex-1">
+                                    <div className="flex items-center mb-2">
+                                      <span className="font-semibold text-navy-900">{flight?.flightNumber || depSeg?.flightNumber}</span>
+                                      <span className="text-gray-500 ml-2">{flight?.airlineName || depSeg?.airlineName || depSeg?.airLine}</span>
+                                      <span className={`ml-4 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                                        {booking.status}
                                       </span>
+                                      {user?.role === 'admin' && (
+                                        <>
+                                          <select
+                                            className="ml-4 border rounded px-2 py-1 text-xs"
+                                            value={booking.status}
+                                            disabled={statusChangePending}
+                                            onChange={e => handleStatusChange(booking._id, e.target.value)}
+                                          >
+                                            <option value="booked">Booked</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="cancelled">Cancelled</option>
+                                            <option value="paid">Paid</option>
+                                          </select>
+                                          {statusChangePending && statusChangeId === booking._id && (
+                                            <span className="ml-2 inline-block align-middle">
+                                              <svg className="animate-spin h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                              </svg>
+                                            </span>
+                                          )}
+                                        </>
+                                      )}
+                                    </div>
+                                    <div className="text-gray-600 mb-1">
+                                      {depSeg?.from} → {depSeg?.to} {retSeg ? ` / ${retSeg.from} → ${retSeg.to}` : ''}
+                                    </div>
+                                    <div className="text-sm text-gray-500">
+                                      {depSeg && formatDateLocal(new Date(depSeg.departureTime), 'IT')}
+                                      {retSeg && (
+                                        <>
+                                          {' '}↔{' '}
+                                          {formatDateLocal(new Date(retSeg.departureTime), 'IT')}
+                                        </>
+                                      )}
+                                      {' • '}Classe {flight?.travelClass} • {flight?.ticketType}
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-1">
+                                      Passeggeri: {(flight?.adults || 0) + (flight?.children || 0) + (flight?.infants || 0)}
+                                      {passenger?.name && ` • ${passenger.name}`} {passenger?.surname && passenger?.surname} {passenger?.email && `• ${passenger.email}`} {passenger?.phone && `• ${passenger.phone}`}
+                                    </div>
+                                    {(flight?.adults || flight?.children || flight?.infants) && (
+                                      <div className="text-xs text-gray-500 mt-1">
+                                        <span className="font-semibold">Adulti:</span> {flight?.adults || 0} <span className="font-semibold ml-2">Bambini:</span> {flight?.children || 0} <span className="font-semibold ml-2">Neonati:</span> {flight?.infants || 0}
+                                      </div>
                                     )}
-                                  </>
-                                )}
-                              </div>
-                              <div className="text-gray-600 mb-1">
-                                {depSeg?.from} → {depSeg?.to} {retSeg ? ` / ${retSeg.from} → ${retSeg.to}` : ''}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {depSeg && formatDateLocal(new Date(depSeg.departureTime), 'IT')}
-                                {retSeg && (
-                                  <>
-                                    {' '}↔{' '}
-                                    {formatDateLocal(new Date(retSeg.departureTime), 'IT')}
-                                  </>
-                                )}
-                                {' • '}Classe {flight?.travelClass} • {flight?.ticketType}
-                              </div>
-                              <div className="text-xs text-gray-500 mt-1">
-                                Passeggeri: {(flight?.adults || 0) + (flight?.children || 0) + (flight?.infants || 0)}
-                                {passenger?.name && ` • ${passenger.name}`} {passenger?.surname && passenger?.surname} {passenger?.email && `• ${passenger.email}`} {passenger?.phone && `• ${passenger.phone}`}
-                              </div>
-                              {(flight?.adults || flight?.children || flight?.infants) && (
-                                <div className="text-xs text-gray-500 mt-1">
-                                  <span className="font-semibold">Adulti:</span> {flight?.adults || 0} <span className="font-semibold ml-2">Bambini:</span> {flight?.children || 0} <span className="font-semibold ml-2">Neonati:</span> {flight?.infants || 0}
+                                  </div>
+                                  <div className="mt-4 md:mt-0 text-right">
+                                    <div className="text-xl font-bold text-navy-900">€{flight?.price}</div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="mt-2"
+                                      onClick={() => {
+                                        setSelectedFlight(flight);
+                                        setDetailsDialogOpen(true);
+                                      }}
+                                    >
+                                      Dettagli
+                                    </Button>
+                                  </div>
                                 </div>
-                              )}
-                            </div>
-                            <div className="mt-4 md:mt-0 text-right">
-                              <div className="text-xl font-bold text-navy-900">€{flight?.price}</div>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="mt-2"
-                                onClick={() => {
-                                  setSelectedFlight(flight);
-                                  setDetailsDialogOpen(true);
-                                }}
-                              >
-                                Dettagli
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })
+                              </div>
+                            );
+                          })}
+                        </>
+                      )}
+                    </PaginationWrapper>
                   )}
                 </div>
               )}

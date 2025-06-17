@@ -3,7 +3,7 @@ import React from 'react';
 const DashboardLoader: React.FC = () => (
   <div className="space-y-4 animate-pulse">
     {[...Array(3)].map((_, idx) => (
-      <div className="border border-gray-200 rounded-lg p-4">
+      <div key={idx+'load'} className="border border-gray-200 rounded-lg p-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between">
           <div className="flex-1">
             <div className="flex items-center mb-2">
