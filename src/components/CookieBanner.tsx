@@ -1,15 +1,42 @@
 import { useState, useEffect } from 'react';
 
+const CONSENT_KEY = 'cookieConsent';
+const CONSENT_EXPIRY_MONTHS = 12;
+
+function isConsentExpired(consent: string | null) {
+  if (!consent) return true;
+  try {
+    const parsed = JSON.parse(consent);
+    if (!parsed.timestamp) return true;
+    const expiryDate = new Date(parsed.timestamp);
+    expiryDate.setMonth(expiryDate.getMonth() + CONSENT_EXPIRY_MONTHS);
+    return new Date() > expiryDate;
+  } catch {
+    return true;
+  }
+}
+
+export function revokeCookieConsent() {
+  localStorage.removeItem(CONSENT_KEY);
+  window.location.reload(); // Optionally reload to show banner again
+}
+
 const CookieBanner = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem('cookieConsent');
-    if (!consent) setVisible(true);
+    const consent = localStorage.getItem(CONSENT_KEY);
+    if (!consent || isConsentExpired(consent)) setVisible(true);
   }, []);
 
   const handleConsent = (accepted: boolean) => {
-    localStorage.setItem('cookieConsent', accepted ? 'accepted' : 'rejected');
+    localStorage.setItem(
+      CONSENT_KEY,
+      JSON.stringify({
+        value: accepted ? 'accepted' : 'rejected',
+        timestamp: new Date().toISOString(),
+      })
+    );
     setVisible(false);
   };
 
