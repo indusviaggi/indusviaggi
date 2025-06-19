@@ -96,7 +96,7 @@ const FAQ = () => {
             <p className="text-gray-600 mb-4">
               Non hai trovato quello che cercavi?
             </p>
-            <a href="/contact" className="btn-accent">
+            <a href="/" className="btn-accent">
               Contattaci
             </a>
           </div>
