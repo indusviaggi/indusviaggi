@@ -41,14 +41,13 @@ const Hero = () => {
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
       <BackgroundSlider />
-      
       <div className="relative z-10 text-center px-6 md:px-10 max-w-5xl mx-auto">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up opacity-0" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
+        <h1 className="text-3xl md:text-3xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up opacity-0" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
           Viaggia <br />
           <span className="text-gold-500">Verso l'Avventura</span>
         </h1>
         
-        <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto animate-fade-in-up opacity-0" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
+        <p className="text-md md:text-xl text-white/90 mb-8 max-w-2xl mx-auto animate-fade-in-up opacity-0" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
           Vivi il viaggio di una vita con le nostre destinazioni selezionate e pacchetti di viaggio personalizzati.
         </p>
         

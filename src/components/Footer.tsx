@@ -110,12 +110,12 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="La tua email"
-                className="flex-1 px-3 py-2 rounded-l-lg text-navy-900 focus:outline-none text-sm"
+                className="flex-1 px-1 py-2 rounded-l-lg text-navy-900 focus:outline-none text-sm"
                 required
               />
               <button
                 type="submit"
-                className="bg-gold-500 hover:bg-gold-600 px-3 py-2 rounded-r-lg transition-colors duration-300"
+                className="bg-gold-500 hover:bg-gold-600 px-3 py-3 rounded-r-lg transition-colors duration-300"
                 disabled={loading}
                 aria-label="Iscriviti alla newsletter"
               >
@@ -133,7 +133,7 @@ const Footer = () => {
               className="inline-block align-middle ml-1"
               style={{ height: 60 }}
             />
-            <span>&copy; {new Date().getFullYear()} <Link to='#' className='text-gold-600'>Indus Viaggi.</Link> Tutti i diritti riservati.</span>
+            <span>&copy; {new Date().getFullYear()} <Link to='#' className='text-gold-600' onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Indus Viaggi.</Link> Tutti i diritti riservati.</span>
           </div>
           <div className="text-grey-400">Powered by: <Link to="https://www.akwares.io" target='blank' className="text-gold-600">Akwares</Link></div>
         </div>
