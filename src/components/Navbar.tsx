@@ -75,7 +75,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
         {/* Logo */}
         <Link to="/" className="flex items-center min-w-0 flex-shrink-0">
-          <img src="/l1.png" alt="Logo" className="h-10 w-auto" />
+          <img src="/l1.png" alt="Logo" className="h-10 w-auto logo-hover-effect" />
         </Link>
         {/* Desktop Nav */}
         <nav className="hidden lg:flex flex-1 items-center justify-center">
@@ -84,7 +84,7 @@ const Navbar = () => {
               <li key={item.key}>
                 <button
                   onClick={() => handleNavClick(item.key)}
-                  className="font-medium text-base 2xl:text-lg px-2 py-1 rounded transition hover:text-gold-500 text-navy-900 hover:bg-gold-50"
+                  className="font-medium text-base 1xl:text-lg px-2 py-1 rounded transition hover:text-gold-500 text-navy-900 hover:bg-gold-50"
                 >
                   {item.label}
                 </button>
@@ -184,7 +184,7 @@ const Navbar = () => {
               <li key={item.key}>
                 <button
                   onClick={() => handleNavClick(item.key)}
-                  className="block py-2 text-navy-900 font-medium w-full text-left rounded hover:bg-gold-50"
+                  className="block py-2 text-navy-900 font-small w-full text-left rounded hover:bg-gold-50"
                 >
                   {item.label}
                 </button>

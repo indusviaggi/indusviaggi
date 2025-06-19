@@ -166,3 +166,13 @@ html {
   width: 100%;
   overflow-x: hidden;
 }
+
+/* Logo hover effect for Navbar */
+.logo-hover-effect {
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform;
+  transform: scale(1.60);
+}
+.logo-hover-effect:hover {
+  transform: scale(1.65);
+}
