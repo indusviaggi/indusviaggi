@@ -122,7 +122,8 @@ const Cancellations = () => {
                 <strong>Email:</strong> indusviaggi@gmail.com<br/>
                 <strong>Telefono/WhatsApp:</strong> +39 388 822 0982<br/>
                 <strong>Ufficio: </strong> 0522 434 627<br/>
-                <strong>Indirizzo: </strong> Via Don Giovanni Alai 6/A Reggio Emilia, RE 42121<br/>
+                <strong>Sede principale: </strong> Via Giovanni Amendola, 3b, 40121 Bologna BO<br/>
+                <strong>Sede di Reggio Emilia: </strong> Via Don Giovanni Alai 6/A Reggio Emilia, RE 42121<br/>
               </p>
             </div>
           </div>
