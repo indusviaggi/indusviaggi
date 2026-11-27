@@ -140,7 +140,7 @@ const ContactSection = () => {
                 <div>
                   <h3 className="text-navy-900 font-semibold mb-2">Visitaci</h3>
                   <p className="text-navy-600">
-                    <strong>Sede principale (Bologna)</strong><br />
+                    <strong>Sede principale Bologna</strong><br />
                     Via Giovanni Amendola, 3b<br />
                     40121 Bologna BO
                   </p>
